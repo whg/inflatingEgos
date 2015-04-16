@@ -21,6 +21,8 @@ access_token_secret="LZNdYAmsb3a3XhGHTt5jsVcm5aAtUM6dJUxfTTFpLxuRM"
 conn = None
 
 def get_sentiment(text):
+    """Using TheySay to analyse a given text"""
+    
     headers = { "Content-Type": "application/json" }
     url = "http://apidemo.theysay.io/api/v1/sentiment"
     r = requests.post(url, headers=headers, data=json.dumps({ 'text': text }))
@@ -28,9 +30,8 @@ def get_sentiment(text):
     return r.json()['sentiment']
 
 
-def add_row(candidate, data):
-
-    global conn
+def construct_tweet(candidate, data):
+    """Make a dictionary to of the tweet + analysis + candidate"""
     
     row = {
         'id': data['id'],
@@ -42,6 +43,17 @@ def add_row(candidate, data):
 
     sentiment = get_sentiment(data['text'])
     row.update(sentiment)
+
+    return row
+
+def add_row(row):
+    """Given the json from a tweet and candidate add to the SQLite db
+    :params:
+    :candidate: this is the string from the keys of the  terms.py dict
+    :data: a tweet in JSON
+    """
+    
+    global conn
     
     names = ','.join(row.keys())
     marks = ','.join(['?' for _ in row])
@@ -67,6 +79,8 @@ class InflatedEgos(StreamListener):
         
     @property
     def terms(self):
+        """Lazy loading of terms from terms.py file"""
+        
         if not self._terms:
                 logging.info('loading terms')
                 termdict = eval(open('terms.py').read())
@@ -77,23 +91,25 @@ class InflatedEgos(StreamListener):
         return self._terms
 
 
-    #StreamListener func
-    
     def on_data(self, jsonstring):
-
+        """This is where all the magic happens"""
+        
         data = json.loads(jsonstring)
 
+        # find the candidate in the tweet
         counts = defaultdict(int)
-
         text = data['text'].lower()
+        
         for term, name in self.terms.items():
             if term in text:
                 counts[name]+= 1
 
         # only store if we have 1 candidate
-
         if len(counts) == 1:
-            add_row(list(counts.keys())[0], data)
+            
+            row = construct_tweet(list(counts.keys())[0], data)
+            add_row(row)
+            
         else:
             logging.info('Multiple candidates in tweet')
 
@@ -124,8 +140,11 @@ if __name__ == '__main__':
     try:
         stream.filter(track=terms)
     except KeyboardInterrupt:
-        conn.close()
         print('closed connection')
+
+    finally:
+        conn.close()
+            
 
 
     
