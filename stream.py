@@ -6,6 +6,7 @@ import requests
 import sqlite3
 import json
 import logging
+from sys import stdout
 from datetime import datetime
 from itertools import chain
 from collections import defaultdict
@@ -20,6 +21,29 @@ access_token_secret="LZNdYAmsb3a3XhGHTt5jsVcm5aAtUM6dJUxfTTFpLxuRM"
 
 conn = None
 
+def get_sentiment2(text):
+    url = "https://japerk-text-processing.p.mashape.com/sentiment/"
+
+    headers = {
+        "X-Mashape-Key": "MU1w0GGHA8mshaHMPY4wNap7sMmip1VvrhWjsnexOzYAM2UqEQ",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept": "application/json"
+    }
+
+    params = {
+        "language": "english",
+        "text": text
+    }
+
+
+    r = requests.post(url, headers=headers, data=params)
+    j = r.json()
+    d = j['probability']
+    d['label'] = j['label']
+    return d
+
+
+
 def get_sentiment(text):
     """Using TheySay to analyse a given text"""
     
@@ -30,7 +54,7 @@ def get_sentiment(text):
     return r.json()['sentiment']
 
 
-def construct_tweet(candidate, data):
+def construct_tweet(candidate, data, sentiment_func=None):
     """Make a dictionary to of the tweet + analysis + candidate"""
     
     row = {
@@ -41,8 +65,15 @@ def construct_tweet(candidate, data):
         'candidate': candidate,
     }
 
-    sentiment = get_sentiment(data['text'])
-    row.update(sentiment)
+    if sentiment_func:
+        try:
+            print(row['tweet'])
+            sentiment = sentiment_func(data['text'])
+            row.update(sentiment)
+            print(sentiment)
+        except:
+            print("can't get sentiment")
+            pass
 
     return row
 
@@ -57,7 +88,9 @@ def add_row(row):
     
     names = ','.join(row.keys())
     marks = ','.join(['?' for _ in row])
-    table = 'tweets3'
+    # table = 'tweets3'
+    # table = 'raw_tweets'
+    table = 'tweets4'
 
     qstring = 'INSERT INTO {table} ({names}) VALUES ({marks})'.format(**locals())
 
@@ -106,8 +139,8 @@ class InflatedEgos(StreamListener):
 
         # only store if we have 1 candidate
         if len(counts) == 1:
-            
-            row = construct_tweet(list(counts.keys())[0], data)
+            candidate = list(counts.keys())[0]
+            row = construct_tweet(candidate, data, get_sentiment2)
             add_row(row)
             
         else:

@@ -1,5 +1,5 @@
 {
-    'David Cameron': [
+    'cameron': [
         '@David_Cameron',
         '@conservatives',
         '#conservatives',
@@ -8,21 +8,21 @@
         '#VoteConservative',
         '#ConservativeManifesto'
     ],
-    'Ed Miliband': [
+    'miliband': [
         '@Ed_Miliband',
         '@UKLabour',
         '#labour',
         '#VoteLabour',
         '#LabourManifesto'
     ],
-    'Leanne Wood': [
+    'wood': [
         '@LeanneWood',
         '@Plaid_Cymru',
         '#plaid15',
         '#VotePlaid',
         '#PlaidManifesto'
     ],
-    'Natalie Bennett': [
+    'bennett': [
         '@natalieben',
         '@TheGreenParty',
         '#greens',
@@ -33,14 +33,14 @@
         '#VoteGreen2015',
         '#ChangeTheTune'
     ],
-    'Nick Clegg': [
+    'clegg': [
         '@Nick_Clegg',
         '@LibDems',
         '#libdems',
         '#VoteLibDem',
         '#LibDemManifesto'
     ],
-    'Nicola Sturgeon': [
+    'sturgeon': [
         '@NicolaSturgeon',
         '@theSNP',
         '#snp',
@@ -49,7 +49,7 @@
         '#SexySocialism',
         '#VoteSNPGetSexy'
     ],
-    'Nigel Farage': [
+    'farage': [
         '@Nigel_Farage',
         '@UKIP',
         '#ukip',

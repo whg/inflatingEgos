@@ -23,4 +23,4 @@ and install dependencies:
 
 * `python tsv2dict.py outfile=terms.py`
 
-  Create the terms (hastags and handles) that the stream filters. Takes it's input from stdin terminated by an empty line. Normally, you paste a Google Doc spreadsheet into this.
+  Create the terms (hastags and handles) that the stream filters. Takes it's input from stdin terminated by an empty line. Normally, you paste a Google Doc spreadsheet into this.x
