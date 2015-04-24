@@ -1,4 +1,9 @@
+gnureadline==6.3.3
+ipython==3.1.0
 oauthlib==0.7.2
+pprintpp==0.2.1
+pyserial==2.7
+python-osc==1.4.2
 requests==2.6.0
 requests-oauthlib==0.4.2
 six==1.9.0
