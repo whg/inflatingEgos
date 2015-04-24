@@ -77,6 +77,17 @@ def construct_tweet(candidate, data, sentiment_func=None):
 
     return row
 
+mongo_col = None
+def add_row_mongo(data):
+    global mongo_col
+    if not mongo_col:
+        from pymongo import MongoClient
+        mongo = MongoClient()
+        mongo_col = mongo["egos"]["main"]
+
+    mongo_col.insert(data)
+    logging.info('inserted %s into mongo' % data['id'])
+    
 def add_row(row, table='tweets4'):
     """Given the json from a tweet and candidate add to the SQLite db
     :params:
@@ -134,6 +145,11 @@ class InflatedEgos(StreamListener):
         
         data = json.loads(jsonstring)
 
+        add_row_mongo(data)
+        return True
+        ##################################################
+        # nothing happens below
+        
         # find the candidate in the tweet
         counts = defaultdict(int)
         text = data['text'].lower()
@@ -188,25 +204,14 @@ if __name__ == '__main__':
     listener = InflatedEgos()
     stream = Stream(auth, listener)
 
-    follow = {
-        "cameron": "103065157",
-        "miliband": "61781260",
-        "clegg": "15010349",
-        "farage": "19017675",
-        "sturgeon": "160952087",
-        "bennett": "16596200",
-        "wood": "14450739",
-    }
-    
-    terms = list(listener.terms.keys())
+    from twitter_infos import infos
 
-    follow = list(follow.values())
-    print('starting with {0}'.format(terms))
-    print('following {0}'.format(follow))
+    terms = list(chain(*[e['tags'] for e in infos.values()]))
+    follows = [e['id_str'] for e in infos.values()]
     
     try:
         # stream.filter(track=terms)
-        stream.filter(follow=follow)
+        stream.filter(track=terms, follow=follows)
     except KeyboardInterrupt:
         print('closed connection')
 
