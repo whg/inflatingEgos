@@ -11,7 +11,7 @@ from datetime import datetime
 from itertools import chain
 from collections import defaultdict
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 consumer_key="CQ8wPwKADz9FheAOui23uYUjW"
 consumer_secret="O0YPIAD5LSmIs5zET8WuBGYviAOcIzhvc2INTbsJaN3YTzy9fA"
@@ -58,7 +58,7 @@ def construct_tweet(candidate, data, sentiment_func=None):
     """Make a dictionary to of the tweet + analysis + candidate"""
     
     row = {
-        'id': data['id'],
+        'id': data['id_str'],
         'tweet': data['text'],
         'posted_by': data['user']['name'],
         'timestamp': datetime.fromtimestamp(int(data['timestamp_ms']) / 1000.0),
@@ -77,7 +77,7 @@ def construct_tweet(candidate, data, sentiment_func=None):
 
     return row
 
-def add_row(row):
+def add_row(row, table='tweets4'):
     """Given the json from a tweet and candidate add to the SQLite db
     :params:
     :candidate: this is the string from the keys of the  terms.py dict
@@ -90,7 +90,12 @@ def add_row(row):
     marks = ','.join(['?' for _ in row])
     # table = 'tweets3'
     # table = 'raw_tweets'
-    table = 'tweets4'
+    # table = 'logging'
+
+
+
+    logging.debug(names)
+    logging.debug(list(row.values()))
 
     qstring = 'INSERT INTO {table} ({names}) VALUES ({marks})'.format(**locals())
 
@@ -140,8 +145,8 @@ class InflatedEgos(StreamListener):
         # only store if we have 1 candidate
         if len(counts) == 1:
             candidate = list(counts.keys())[0]
-            row = construct_tweet(candidate, data, get_sentiment2)
-            add_row(row)
+            row = construct_tweet(candidate, data)
+            add_row(row, "follow1")
             
         else:
             logging.info('Multiple candidates in tweet')
@@ -157,9 +162,25 @@ class InflatedEgos(StreamListener):
         print(e)
         
 
+def analyse_tweets(candidate, handle, filename, table):
+    import time
+
+    data = json.loads('[' + open(filename).read()[:-2] + ']')
+    
+    for d in data:
+        if handle in d['text']:
+            row = construct_tweet(candidate, d, get_sentiment)
+            add_row(row, table)
+            time.sleep(0.1)
+        
+
+        
 if __name__ == '__main__':
 
     conn = sqlite3.connect('egos.db')
+
+    # analyse_tweets('cameron', '@David_Cameron', '/Users/whg/Desktop/10k_tweets', 'cameron')
+    # exit()
     
     auth = OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
@@ -167,11 +188,25 @@ if __name__ == '__main__':
     listener = InflatedEgos()
     stream = Stream(auth, listener)
 
+    follow = {
+        "cameron": "103065157",
+        "miliband": "61781260",
+        "clegg": "15010349",
+        "farage": "19017675",
+        "sturgeon": "160952087",
+        "bennett": "16596200",
+        "wood": "14450739",
+    }
+    
     terms = list(listener.terms.keys())
+
+    follow = list(follow.values())
     print('starting with {0}'.format(terms))
+    print('following {0}'.format(follow))
     
     try:
-        stream.filter(track=terms)
+        # stream.filter(track=terms)
+        stream.filter(follow=follow)
     except KeyboardInterrupt:
         print('closed connection')
 
