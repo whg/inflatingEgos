@@ -1,33 +1,44 @@
 from autobahn.asyncio.websocket import WebSocketServerProtocol, WebSocketServerFactory
+
 from pythonosc import dispatcher
 from pythonosc.osc_server import ForkingOSCUDPServer, ThreadingOSCUDPServer
+
+import argparse
 import asyncio
 import json
+import threading
+
+osc_server = None
 
 class MyServerProtocol(WebSocketServerProtocol):
-
+    osc_ip = None
+    osc_port = None
+    
     def onConnect(self, request):
         print("Client connecting: {0}".format(request.peer))
 
     def send(self, ud, data):
-        print('sending osc message to page')
-        self.sendMessage(data.encode('utf8'))
+        print('sending osc message to page' + data)
+        self.sendMessage(data.encode('utf8'), False)
 
-
+        
     def onOpen(self):
-        global server
-        server = self
-
         print("WebSocket connection open.")
         
         dispatch = dispatcher.Dispatcher()
         dispatch.map("/send", self.send)
 
-        print('osc starting...')
-        server = ThreadingOSCUDPServer(('localhost', 9001), dispatch)
-        server.serve_forever()
-        
 
+        global osc_server
+        if not osc_server:
+            osc_server = ForkingOSCUDPServer((self.osc_ip, self.osc_port), dispatch)
+            server_thread = threading.Thread(target=osc_server.serve_forever)
+            server_thread.start()
+            print('started osc server')
+        else:
+            osc_server._dispatcher = dispatch
+            print('osc server already running, reset dispatcher')
+        
         
     def onMessage(self, payload, isBinary):
         # import IPython; IPython.embed()
@@ -47,16 +58,24 @@ class MyServerProtocol(WebSocketServerProtocol):
 coro = None
 
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--ip", default="127.0.0.1", help="The ip to listen on")
+    parser.add_argument("--port",type=int, default=5005, help="The port to listen on")
+    args = parser.parse_args()
     
-
     print('start.')
-    server = WebSocketServerFactory("ws://localhost:9000", debug=True)
+    server = WebSocketServerFactory("ws://localhost:9000", debug=False)
+    MyServerProtocol.osc_ip = args.ip
+    MyServerProtocol.osc_port = args.port
     server.protocol = MyServerProtocol
-
+    
+    
     loop = asyncio.get_event_loop()
     coro = loop.create_server(server, '127.0.0.1', 9000)
+    # future = next(coro)
     connection = loop.run_until_complete(coro)
-
+    # import IPython; IPython.embed()
     try:
         loop.run_forever()
     except KeyboardInterrupt:
@@ -64,25 +83,5 @@ if __name__ == '__main__':
     finally:
         connection.close()
         loop.close()
+        osc_server.shutdown()
 
-
-    # import sys
-
-    # from twisted.python import log
-    # from twisted.internet import reactor
-
-    # log.startLogging(sys.stdout)
-
-    # factory = WebSocketServerFactory("ws://localhost:9000", debug=False)
-    # factory.protocol = MyServerProtocol
-    # # factory.setProtocolOptions(maxConnections=2)
-
-    # reactor.listenTCP(9000, factory)
-    # reactor.run()
-    
-    # # socket_server = threading.Thread(target=start_socket_server)
-    # print('started...')
-    # while True:
-    #     i = input()
-    #     if i == 'q':
-    #         break
