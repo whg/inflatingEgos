@@ -1,14 +1,18 @@
  var socket = null;
  var isopen = false;
 
+function build_tweet(t) {
+    return '<div class="tweet">' + t + '</div>'
+}
+
 var main = {
     write: function (message, number) {
         var main = document.querySelector("#main");
-        main.innerHTML+= "<p>" + message + "(" + number + ")";
+        $("#main").prepend(build_tweet(message));
     },
 };
 
- window.onload = function() {
+window.onload = function() {
     socket = new WebSocket("ws://127.0.0.1:9000");
     socket.binaryType = "arraybuffer";
     socket.onopen = function() {
@@ -33,18 +37,18 @@ var main = {
        socket = null;
        isopen = false;
     }
- };
+};
 
- function sendText() {
+function sendText() {
     if (isopen) {
        socket.send("Hello, world!");
        console.log("Text message sent.");               
     } else {
        console.log("Connection not opened.");
     }
- }
+}
 
- function sendBinary() {
+function sendBinary() {
     if (isopen) {
        var buf = new ArrayBuffer(32);
        var arr = new Uint8Array(buf);
@@ -54,4 +58,4 @@ var main = {
     } else {
        console.log("Connection not opened.");
     }
- }
+}
