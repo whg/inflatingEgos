@@ -17,11 +17,16 @@ var main = {
     }
     socket.onmessage = function(e) {
        if (typeof e.data == "string") {
-           var rpc = JSON.parse(e.data);
-           main[rpc.func].apply(null, rpc.args);
+           try {
+               var rpc = JSON.parse(e.data);
+               main[rpc.func].apply(null, rpc.args);
+           } catch(e) {
+               console.log("not json");
+           }
            
           console.log("Text message received: " + e.data);
        }
+       else console.log("not string");
     }
     socket.onclose = function(e) {
        console.log("Connection closed.");
