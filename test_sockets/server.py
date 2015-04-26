@@ -10,6 +10,9 @@ import threading
 
 osc_server = None
 
+import sys
+sys.path.append('..')
+
 class MyServerProtocol(WebSocketServerProtocol):
     osc_ip = None
     osc_port = None
@@ -56,23 +59,27 @@ class MyServerProtocol(WebSocketServerProtocol):
 
 
 coro = None
+import twitter_infos as ti
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--ip", default="127.0.0.1", help="The ip to listen on")
-    parser.add_argument("--port",type=int, default=5005, help="The port to listen on")
+    parser.add_argument("-c", default="cameron", help="candidate name")
+    parser.add_argument("--ip", default="0.0.0.0", help="The ip to listen on")
+    # parser.add_argument("--port",type=int, default=5005, help="The port to listen on")
     args = parser.parse_args()
-    
-    print('start.')
-    server = WebSocketServerFactory("ws://localhost:9000", debug=False)
+
+    cid = ti.inverse[args.c]
+    port = ti.infos[cid]['ws_port']
+    print('starting for {0} on {1}'.format(args.c, port))
+    server = WebSocketServerFactory("ws://localhost:{0}".format(port), debug=False)
     MyServerProtocol.osc_ip = args.ip
-    MyServerProtocol.osc_port = args.port
+    MyServerProtocol.osc_port = 5005
     server.protocol = MyServerProtocol
     
     
     loop = asyncio.get_event_loop()
-    coro = loop.create_server(server, '127.0.0.1', 9000)
+    coro = loop.create_server(server, '127.0.0.1', port)
     # future = next(coro)
     connection = loop.run_until_complete(coro)
     # import IPython; IPython.embed()
