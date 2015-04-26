@@ -1,7 +1,6 @@
 """
 This file contains all the details for the candidates
 
-the osc port is always 5005
 """
 
 infos = {
@@ -24,6 +23,7 @@ infos = {
         'name': 'David Cameron',
         'id_str': '103065157',
         'ip': '192.168.0.83',
+        'osc_port': 5005,
         'tags': [
             '@David_Cameron',
             '@conservatives',
@@ -71,6 +71,7 @@ infos = {
     '160952087': {
         'name': 'Nicola Sturgeon',
         'id_str': '160952087',
+        'ip': '192.168.0.83',
         'tags': [
             '@NicolaSturgeon',
             '@theSNP',
@@ -103,7 +104,9 @@ import os
 import json
 ports = json.load(open(os.path.join(os.path.dirname(__file__), 'port_numbers.json')))
 for id, v in infos.items():
-    infos[id]['ws_port'] = ports[v['short_name']]
+    port = ports[v['short_name']]
+    infos[id]['ws_port'] = port
+    infos[id]['osc_port'] = port - 1000
     
 inverse = { v['short_name']: id for id,v in infos.items() }
     

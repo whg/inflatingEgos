@@ -71,10 +71,11 @@ if __name__ == '__main__':
 
     cid = ti.inverse[args.c]
     port = ti.infos[cid]['ws_port']
+    
     print('starting for {0} on {1}'.format(args.c, port))
     server = WebSocketServerFactory("ws://localhost:{0}".format(port), debug=False)
     MyServerProtocol.osc_ip = args.ip
-    MyServerProtocol.osc_port = 5005
+    MyServerProtocol.osc_port = ti.infos[cid]['osc_port']
     server.protocol = MyServerProtocol
     
     

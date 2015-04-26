@@ -54,13 +54,19 @@ function openSocket(port) {
 $(document).ready(function() {
     var candidate = location.hash.substr(1);
     if (candidate.length < 3) {
-        alert("no candidate");
+        var ts = location.href.split('/');
+        var filebasename = ts[ts.length-1].split('.')[0];
+        if (filebasename) {
+            candidate = filebasename;
+        }
+        else {
+            alert("no candidate");
+        }
     }
-    else {
-        var port = PORTS[candidate];
-        console.log('opening on port ' + port);
-        openSocket(port);
-    }
+
+    var port = PORTS[candidate];
+    console.log('opening on port ' + port);
+    openSocket(port);
 });
 
 function sendText() {

@@ -6,12 +6,17 @@ import requests
 import sqlite3
 import json
 import logging
-from sys import stdout
 from datetime import datetime
 from itertools import chain
 from collections import defaultdict
+from pythonosc import udp_client
+from pythonosc import osc_message_builder
+
+from twitter_infos import infos
+from osc_helpers import *
 
 logging.basicConfig(level=logging.DEBUG)
+
 
 consumer_key="CQ8wPwKADz9FheAOui23uYUjW"
 consumer_secret="O0YPIAD5LSmIs5zET8WuBGYviAOcIzhvc2INTbsJaN3YTzy9fA"
@@ -21,38 +26,9 @@ access_token_secret="LZNdYAmsb3a3XhGHTt5jsVcm5aAtUM6dJUxfTTFpLxuRM"
 
 conn = None
 
-def get_sentiment2(text):
-    url = "https://japerk-text-processing.p.mashape.com/sentiment/"
+from sentiment import get_sentiment, get_sentiment2
 
-    headers = {
-        "X-Mashape-Key": "MU1w0GGHA8mshaHMPY4wNap7sMmip1VvrhWjsnexOzYAM2UqEQ",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Accept": "application/json"
-    }
-
-    params = {
-        "language": "english",
-        "text": text
-    }
-
-
-    r = requests.post(url, headers=headers, data=params)
-    j = r.json()
-    d = j['probability']
-    d['label'] = j['label']
-    return d
-
-
-
-def get_sentiment(text):
-    """Using TheySay to analyse a given text"""
-    
-    headers = { "Content-Type": "application/json" }
-    url = "http://apidemo.theysay.io/api/v1/sentiment"
-    r = requests.post(url, headers=headers, data=json.dumps({ 'text': text }))
-    logging.info('made request, status code = %d' % r.status_code)
-    return r.json()['sentiment']
-
+osc_client = None
 
 def construct_tweet(candidate, data, sentiment_func=None):
     """Make a dictionary to of the tweet + analysis + candidate"""
@@ -116,7 +92,7 @@ def add_row(row, table='tweets4'):
     except sqlite3.IntegrityError as e:
         logging.info('bad values!')
         logging.info(e)
-
+        
     conn.commit()
 
 
@@ -124,6 +100,7 @@ class InflatedEgos(StreamListener):
 
     def __init__(self, *args):
         self._terms = None
+        self.clients = {}
         
         
     @property
@@ -146,6 +123,33 @@ class InflatedEgos(StreamListener):
         data = json.loads(jsonstring)
 
         add_row_mongo(data)
+
+        global osc_client
+        if not osc_client:
+            # osc_client = udp_client.UDPClient('192.168.0.83', 5005)
+            osc_client = udp_client.UDPClient('localhost', 5005)
+            
+
+        import re
+        for v in infos.values():
+            r = '|'.join(v['tags'])
+            
+            if re.search(r, data['text'], re.IGNORECASE):
+                candidate = v['short_name']
+                if candidate not in self.clients:
+                    if not 'ip' in v:
+                        print('no ip for %s' % (candidate))
+                        break
+                    
+                    self.clients[candidate] = udp_client.UDPClient(v['ip'], v['osc_port'])
+                    
+                mess = tweet_message(data)
+                self.clients[candidate].send(mess)
+                # osc_client.send(mess)
+                print('sent %s to %s' % (mess, candidate))
+            
+            
+        
         return True
         ##################################################
         # nothing happens below
@@ -204,17 +208,14 @@ if __name__ == '__main__':
     listener = InflatedEgos()
     stream = Stream(auth, listener)
 
-    from twitter_infos import infos
 
     terms = list(chain(*[e['tags'] for e in infos.values()]))
     follows = [e['id_str'] for e in infos.values()]
     
     try:
-        # stream.filter(track=terms)
         stream.filter(track=terms, follow=follows)
     except KeyboardInterrupt:
         print('closed connection')
-
     finally:
         conn.close()
             
