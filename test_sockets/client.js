@@ -9,6 +9,7 @@ var main = {
     write: function (message, number) {
         var main = document.querySelector("#main");
         $("#main").prepend(build_tweet(message));
+        $(".tweet:first").slideDown(200);
     },
 };
 

@@ -10,9 +10,11 @@ body {
 
 .tweet {
     width: 640px;
-    margin-bottom: 20px;
     color: #444;
-    margin: 0 auto;
+    margin: 40px auto;
+    display: none;
+    background: #99aaee;
+    padding: 10px;
 }
 
 .img-container {
