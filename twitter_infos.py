@@ -1,3 +1,9 @@
+"""
+This file contains all the details for the candidates
+
+the osc port is always 5005
+"""
+
 infos = {
     '16596200': {
         'name': 'Natalie Bennett',
@@ -17,6 +23,7 @@ infos = {
     '103065157': {
         'name': 'David Cameron',
         'id_str': '103065157',
+        'ip': '192.168.0.83',
         'tags': [
             '@David_Cameron',
             '@conservatives',
@@ -90,7 +97,15 @@ infos = {
 # add urls using the first tag
 for key, v in infos.items():
     infos[key]['url'] = 'https://twitter.com/{0}'.format(v['tags'][0][1:])
+    infos[key]['short_name'] = v['name'].split()[1].lower()
 
-
+import os
+import json
+ports = json.load(open(os.path.join(os.path.dirname(__file__), 'port_numbers.json')))
+for id, v in infos.items():
+    infos[id]['ws_port'] = ports[v['short_name']]
+    
+inverse = { v['short_name']: id for id,v in infos.items() }
+    
 # from itertools import chain
 # terms = list(chain(*[e['tags'] for e in infos.values()]))
