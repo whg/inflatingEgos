@@ -1,8 +1,17 @@
- var socket = null;
- var isopen = false;
+var socket = null;
+var isopen = false;
+var candidate_data = null;
 
 function build_tweet(t) {
     return '<div class="tweet">' + t + '</div>'
+}
+
+function highlight_tags(tweet) {
+    var ltweet = tweet.toLowerCase();
+
+    console.log(candidate_data.tags);
+    var terms = candidate_data.tags;
+    return tweet.parseHashtag().parseUsername();
 }
 
 function insert_tweet(arg) {
@@ -11,9 +20,10 @@ function insert_tweet(arg) {
     var t = $("#main .twitter-container:first");
 
     t.find(".twitter-name b").text(arg["name"]);
+    t.find(".twitter-user a").attr("href", "http://twitter.com/" + arg["handle"]);
     t.find(".twitter-handle").text("@" + arg["handle"]);
     t.find(".twitter-user img").attr("src", arg["user-img-url"]);
-    t.find(".tweet-contents p").text(arg["tweet"]);
+    t.find(".tweet-contents p").html(highlight_tags(arg["tweet"]));
 
     function add_media(url) {
         if (url) {
@@ -54,12 +64,12 @@ function openSocket(port) {
     }
     socket.onmessage = function(e) {
        if (typeof e.data == "string") {
-           try {
+           // try {
                var rpc = JSON.parse(e.data);
                main[rpc.func].call(null, rpc.arg);
-           } catch(e) {
-               console.log("not json");
-           }
+           // } catch(e) {
+               // console.log("not json");
+           // } 
            
           console.log("Text message received: " + e.data);
        }
@@ -74,7 +84,9 @@ function openSocket(port) {
 
 // $(document).ready(function() {
 $.getJSON('../info.json', function(infos) {
+
     var candidate = location.hash.substr(1);
+
     if (candidate.length < 3) {
         var ts = location.href.split('/');
         var filebasename = ts[ts.length-1].split('.')[0];
@@ -85,10 +97,14 @@ $.getJSON('../info.json', function(infos) {
             alert("no candidate");
         }
     }
-
+    
+    candidate_data = infos[candidate];
+    
     var port = infos[candidate]['ws_port'];
     console.log('opening on port ' + port);
     openSocket(port);
+
+
 
     // $("#main").prepend($("#twitter-template").html());
 

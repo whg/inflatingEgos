@@ -56,25 +56,28 @@ img {
     display: none;
 }
 
-//////////////////////////////////////////////////
-// twitter rip
+
 
 .twitter-container {
-    display: none;
+
+    background: "red";
     
-    color: rgb(41, 47, 51);
-    height: 452px;
-    position: relative;
-    text-align: left;
-    width: 589.984375px;
-    perspective-origin: 294.984375px 226px;
-    transform-origin: 294.984375px 226px;
-    border: 0px none rgb(41, 47, 51);
-    font: normal normal normal normal 14px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    outline: rgb(41, 47, 51) none 0px;
+    /* color: rgb(41, 47, 51); */
+    /* /\* height: 452px; *\/ */
+    /* position: relative; */
+    /* text-align: left; */
+    /* width: 589.984375px; */
+    /* perspective-origin: 294.984375px 226px; */
+    /* transform-origin: 294.984375px 226px; */
+    /* border: 0px none rgb(41, 47, 51); */
+    /* font: normal normal normal normal 14px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif; */
+    /* outline: rgb(41, 47, 51) none 0px; */
 }
 
 .twitter-main {
+    margin: 0 auto;
+    /* background: #0000ff; */
+    
     box-sizing: border-box;
     color: rgb(41, 47, 51);
     overflow-wrap: break-word;
@@ -84,10 +87,10 @@ img {
     word-wrap: break-word;
     perspective-origin: 294.984375px 226px;
     transform-origin: 294.984375px 226px;
-    background: rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box;
+    /* background: rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box; */
     border: 1px solid rgb(225, 232, 237);
     font: normal normal normal normal 14px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    margin: 0px 0px -1px;
+    /* margin: 0px 0px -1px; */
     outline: rgb(41, 47, 51) none 0px;
     padding: 13px 15px 15px;
 }
@@ -203,7 +206,7 @@ img {
     outline: rgb(41, 47, 51) none 0px;
 }
 
-.tweet-contents a, term {
+.tweet-contents a, .tweet-contents .term {
     color: rgb(0, 132, 180);
     letter-spacing: 0.259999990463257px;
     overflow-wrap: break-word;
@@ -406,4 +409,7 @@ img {
     list-style: none outside none;
     outline: rgb(136, 153, 166) none 0px;
 }/*#B_6*/
+
+
+
 
