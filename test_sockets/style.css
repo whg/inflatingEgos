@@ -1,10 +1,11 @@
 body {
     font-family: "Helvetica", sans-serif;
     font-size: 25px;
+    margin: 0px;
 }
 
 #main {
-    width: 1000px;
+    width: 100%;
     margin: 0 auto;
 }
 
@@ -60,7 +61,7 @@ img {
 
 .twitter-container {
 
-    background: "red";
+    /* background: #ff0000; */
     
     /* color: rgb(41, 47, 51); */
     /* /\* height: 452px; *\/ */
@@ -88,7 +89,7 @@ img {
     perspective-origin: 294.984375px 226px;
     transform-origin: 294.984375px 226px;
     /* background: rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box; */
-    border: 1px solid rgb(225, 232, 237);
+    /* border: 1px solid rgb(225, 232, 237); */
     font: normal normal normal normal 14px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
     /* margin: 0px 0px -1px; */
     outline: rgb(41, 47, 51) none 0px;
@@ -104,7 +105,7 @@ img {
     word-wrap: break-word;
     perspective-origin: 278.984375px 13px;
     transform-origin: 278.984375px 13px;
-    border: 0px none rgb(136, 153, 166);
+    /* border: 0px none rgb(136, 153, 166); */
     font: normal normal normal normal 14px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
     outline: rgb(136, 153, 166) none 0px;
     transition: color 0.15s ease 0s;
@@ -188,9 +189,9 @@ img {
 }
 
 .tweet-contents p {
-    padding: 10px 0px;
+    padding: 5px 0px;
     
-    color: rgb(41, 47, 51);
+    color: #eee; /* rgb(41, 47, 51); */
     letter-spacing: 0.259999990463257px;
     overflow-wrap: break-word;
     text-align: left;
@@ -323,93 +324,31 @@ img {
 }
 
 
-#DIV_1 {
-    color: rgb(41, 47, 51);
-    cursor: pointer;
-    height: 20px;
-    width: 506px;
-    perspective-origin: 253px 10px;
-    transform-origin: 253px 10px;
-    border: 0px none rgb(41, 47, 51);
-    font: normal normal normal normal 14px/18px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    list-style: none outside none;
-    margin: 0px 0px 0px 58px;
-    outline: rgb(41, 47, 51) none 0px;
-}/*#DIV_1*/
 
-#DIV_2 {
-    color: rgb(136, 153, 166);
-    cursor: pointer;
-    height: 20px;
-    width: 530px;
-    perspective-origin: 265px 10px;
-    transform-origin: 265px 10px;
-    border: 0px none rgb(136, 153, 166);
-    font: normal normal normal normal 13px/18px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    list-style: none outside none;
-    margin: 0px 0px 0px -24px;
-    outline: rgb(136, 153, 166) none 0px;
-}/*#DIV_2*/
-
-#SPAN_3 {
-    color: rgb(119, 178, 85);
-    cursor: pointer;
+.retweet-container {
+    background: url("retweet2.png") no-repeat;
     display: inline-block;
-    height: 15px;
-    position: relative;
-    top: 2px;
-    width: 14px;
-    perspective-origin: 7px 7.5px;
-    transform-origin: 7px 7.5px;
-    border: 0px none rgb(119, 178, 85);
-    font: normal normal normal normal 14px/15px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    list-style: none outside none;
-    margin: 0px 6px 0px 0px;
-    outline: rgb(119, 178, 85) none 0px;
-}/*#SPAN_3*/
+    background-size: 20px 20px; /* image's size */
+    height: 20px; /* image's height */
+    padding-left: 23px; /* image's width plus 10 px (margin between text and image) */
 
-#SPAN_3:before {
-    color: rgb(119, 178, 85);
-    cursor: pointer;
-    display: block;
-    height: 15px;
-    text-align: center;
-    width: 14px;
-    perspective-origin: 7px 7.5px;
-    transform-origin: 7px 7.5px;
-    content: '';
-    border: 0px none rgb(119, 178, 85);
-    font: normal normal normal normal 14px/15px rosettaicons;
-    list-style: none outside none;
-    outline: rgb(119, 178, 85) none 0px;
-}/*#SPAN_3:before*/
+    margin-left: 7px;
 
-#SPAN_4 {
     color: rgb(136, 153, 166);
-    cursor: pointer;
-    border: 0px none rgb(136, 153, 166);
-    font: normal normal normal normal 13px/18px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    list-style: none outside none;
-    outline: rgb(136, 153, 166) none 0px;
-}/*#SPAN_4*/
-
-#A_5 {
-    color: rgb(136, 153, 166);
+    overflow-wrap: break-word;
+    text-align: left;
     text-decoration: none;
+    /* word-wrap: break-word; */
     border: 0px none rgb(136, 153, 166);
-    font: normal normal normal normal 13px/18px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    list-style: none outside none;
+    font: normal normal normal normal 12px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
     outline: rgb(136, 153, 166) none 0px;
-}/*#A_5*/
+}
 
-#B_6 {
-    color: rgb(136, 153, 166);
-    border: 0px none rgb(136, 153, 166);
-    font: normal normal normal normal 13px/18px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    list-style: none outside none;
-    outline: rgb(136, 153, 166) none 0px;
-}/*#B_6*/
+.retweet-container span {
+    height: 23px; /* image's height */
+    display: table-cell;
+    vertical-align: middle;
 
-
-
-
+    /* display: inline; */
+    
+}

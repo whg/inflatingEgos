@@ -1,5 +1,6 @@
 from pythonosc.osc_message_builder import OscMessageBuilder
 import json
+import re
 
 def osc_message(d):
     """
@@ -16,9 +17,11 @@ def assign_user(d, user):
     d['user-img-url'] = user['profile_image_url']
     
 def tweet_message(data):
-    arg = {
-        'tweet': data['text'],
-    }
+
+    # tweet = re.sub('http:/.+ ', '', data['text'])
+    tweet = re.sub(r'http://[a-zA-Z0-9./]+(?:\s+|$)', '', data['text'])
+    
+    arg = { 'tweet': tweet }
     
     if 'retweeted_status' in data:
         assign_user(arg, data['retweeted_status']['user'])

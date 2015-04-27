@@ -2,6 +2,8 @@ var socket = null;
 var isopen = false;
 var candidate_data = null;
 
+var NUMBER_LIMIT = 10;
+
 function build_tweet(t) {
     return '<div class="tweet">' + t + '</div>'
 }
@@ -25,9 +27,17 @@ function insert_tweet(arg) {
     t.find(".twitter-user img").attr("src", arg["user-img-url"]);
     t.find(".tweet-contents p").html(highlight_tags(arg["tweet"]));
 
+    if (arg["retweeted-by"]) {
+        t.find(".retweet-container span").text(arg["retweeted-by"] + " retweeted");
+    }
+    else {
+        t.find(".retweet-container").remove();
+    }
+    
     function add_media(url) {
         if (url) {
             t.find(".tweet-img-container img").attr("src", url);
+            console.log("added img");
         }
         else {
             t.find(".tweet-img-container").remove();
@@ -35,13 +45,24 @@ function insert_tweet(arg) {
         
     }
 
-    add_media(arg["url"]);
+    add_media(arg["media"]);
+
+    
 
     t.css({ display: "none" });
     t.slideDown(500);
     // console.log("slide down");
     
-    $(".twitter-container:gt(5)").remove();
+    $(".twitter-container:gt(" + NUMBER_LIMIT + ")").remove();
+
+    $(".twitter-container").each(function(i, e) {
+        var v = i * 10;
+        var r = candidate_data.colour.r + v;
+        var g = candidate_data.colour.g + v;
+        var b = candidate_data.colour.b + v;
+        // var r = v, g = v, b = v;
+        $(e).css({ "background": "rgba("+r+","+g+","+b+",255)" });
+    });
 }
 
 var main = {
