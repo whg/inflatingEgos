@@ -63,6 +63,8 @@ img {
 // twitter rip
 
 .twitter-container {
+    display: none;
+    
     color: rgb(41, 47, 51);
     height: 452px;
     position: relative;
@@ -150,7 +152,7 @@ img {
     text-align: left;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 210.65625px;
+
     perspective-origin: 105.328125px 7.5px;
     transform-origin: 105.328125px 7.5px;
     border: 0px none rgb(0, 132, 180);
@@ -320,4 +322,91 @@ img {
     outline: rgb(0, 132, 180) none 0px;
 }
 
+
+#DIV_1 {
+    color: rgb(41, 47, 51);
+    cursor: pointer;
+    height: 20px;
+    width: 506px;
+    perspective-origin: 253px 10px;
+    transform-origin: 253px 10px;
+    border: 0px none rgb(41, 47, 51);
+    font: normal normal normal normal 14px/18px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    list-style: none outside none;
+    margin: 0px 0px 0px 58px;
+    outline: rgb(41, 47, 51) none 0px;
+}/*#DIV_1*/
+
+#DIV_2 {
+    color: rgb(136, 153, 166);
+    cursor: pointer;
+    height: 20px;
+    width: 530px;
+    perspective-origin: 265px 10px;
+    transform-origin: 265px 10px;
+    border: 0px none rgb(136, 153, 166);
+    font: normal normal normal normal 13px/18px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    list-style: none outside none;
+    margin: 0px 0px 0px -24px;
+    outline: rgb(136, 153, 166) none 0px;
+}/*#DIV_2*/
+
+#SPAN_3 {
+    color: rgb(119, 178, 85);
+    cursor: pointer;
+    display: inline-block;
+    height: 15px;
+    position: relative;
+    top: 2px;
+    width: 14px;
+    perspective-origin: 7px 7.5px;
+    transform-origin: 7px 7.5px;
+    border: 0px none rgb(119, 178, 85);
+    font: normal normal normal normal 14px/15px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    list-style: none outside none;
+    margin: 0px 6px 0px 0px;
+    outline: rgb(119, 178, 85) none 0px;
+}/*#SPAN_3*/
+
+#SPAN_3:before {
+    color: rgb(119, 178, 85);
+    cursor: pointer;
+    display: block;
+    height: 15px;
+    text-align: center;
+    width: 14px;
+    perspective-origin: 7px 7.5px;
+    transform-origin: 7px 7.5px;
+    content: '';
+    border: 0px none rgb(119, 178, 85);
+    font: normal normal normal normal 14px/15px rosettaicons;
+    list-style: none outside none;
+    outline: rgb(119, 178, 85) none 0px;
+}/*#SPAN_3:before*/
+
+#SPAN_4 {
+    color: rgb(136, 153, 166);
+    cursor: pointer;
+    border: 0px none rgb(136, 153, 166);
+    font: normal normal normal normal 13px/18px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    list-style: none outside none;
+    outline: rgb(136, 153, 166) none 0px;
+}/*#SPAN_4*/
+
+#A_5 {
+    color: rgb(136, 153, 166);
+    text-decoration: none;
+    border: 0px none rgb(136, 153, 166);
+    font: normal normal normal normal 13px/18px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    list-style: none outside none;
+    outline: rgb(136, 153, 166) none 0px;
+}/*#A_5*/
+
+#B_6 {
+    color: rgb(136, 153, 166);
+    border: 0px none rgb(136, 153, 166);
+    font: normal normal normal normal 13px/18px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    list-style: none outside none;
+    outline: rgb(136, 153, 166) none 0px;
+}/*#B_6*/
 

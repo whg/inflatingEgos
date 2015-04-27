@@ -144,9 +144,12 @@ class InflatedEgos(StreamListener):
                     self.clients[candidate] = udp_client.UDPClient(v['ip'], v['osc_port'])
                     
                 mess = tweet_message(data)
+                
+                    
+                print('sending %s to %s on port %s' % (mess, candidate, v['osc_port']))
                 self.clients[candidate].send(mess)
                 # osc_client.send(mess)
-                print('sent %s to %s' % (mess, candidate))
+
             
             
         

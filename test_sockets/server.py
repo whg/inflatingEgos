@@ -37,7 +37,7 @@ class MyServerProtocol(WebSocketServerProtocol):
             osc_server = ForkingOSCUDPServer((self.osc_ip, self.osc_port), dispatch)
             server_thread = threading.Thread(target=osc_server.serve_forever)
             server_thread.start()
-            print('started osc server')
+            print('started osc server on port %s' % self.osc_port)
         else:
             osc_server._dispatcher = dispatch
             print('osc server already running, reset dispatcher')

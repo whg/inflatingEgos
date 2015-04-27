@@ -15,6 +15,35 @@ function build_tweet(t) {
     return '<div class="tweet">' + t + '</div>'
 }
 
+function insert_tweet(arg) {
+    $("#main").prepend($("#twitter-template").html());
+
+    var t = $("#main .twitter-container:first");
+
+    t.find(".twitter-name b").text(arg["name"]);
+    t.find(".twitter-handle").text("@" + arg["handle"]);
+    t.find(".twitter-user img").attr("src", arg["user-img-url"]);
+    t.find(".tweet-contents p").text(arg["tweet"]);
+
+    function add_media(url) {
+        if (url) {
+            t.find(".tweet-img-container img").attr("src", url);
+        }
+        else {
+            t.find(".tweet-img-container").remove();
+        }
+        
+    }
+
+    add_media(arg["url"]);
+
+    t.css({ display: "none" });
+    t.slideDown(500);
+    // console.log("slide down");
+    
+    $(".twitter-container:gt(5)").remove();
+}
+
 var main = {
     write: function (message, number) {
         var main = document.querySelector("#main");
@@ -22,6 +51,8 @@ var main = {
         $(".tweet:first").slideDown(500);
         $(".tweet:gt(5)").remove();
     },
+    post: insert_tweet,
+    
 };
 
 function openSocket(port) {
@@ -35,7 +66,7 @@ function openSocket(port) {
        if (typeof e.data == "string") {
            try {
                var rpc = JSON.parse(e.data);
-               main[rpc.func].apply(null, rpc.args);
+               main[rpc.func].call(null, rpc.arg);
            } catch(e) {
                console.log("not json");
            }
@@ -68,15 +99,15 @@ $(document).ready(function() {
     console.log('opening on port ' + port);
     openSocket(port);
 
-    $("#main").prepend($("#twitter-template").html());
+    // $("#main").prepend($("#twitter-template").html());
 
-    var t = $("#main .twitter-container:first");
-    console.log(t);
-    t.find(".twitter-name b").text("David Cameron");
-    t.find(".twitter-handle").text("@David_Cameron");
-    t.find(".twitter-user img").attr("src", "https://pbs.twimg.com/profile_images/567663852796399617/mYltRqyb_normal.jpeg");
-    t.find(".tweet-contents p").text("This is a tweet");
-    t.find(".tweet-img-container img").attr("src", "https://pbs.twimg.com/media/CDlILU9W0AAFB0O.png:large");
+    // var t = $("#main .twitter-container:first");
+    // console.log(t);
+    // t.find(".twitter-name b").text("David Cameron");
+    // t.find(".twitter-handle").text("@David_Cameron");
+    // t.find(".twitter-user img").attr("src", "https://pbs.twimg.com/profile_images/567663852796399617/mYltRqyb_normal.jpeg");
+    // t.find(".tweet-contents p").text("This is a tweet");
+    // t.find(".tweet-img-container img").attr("src", "https://pbs.twimg.com/media/CDlILU9W0AAFB0O.png:large");
     
     
 });
