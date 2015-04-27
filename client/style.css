@@ -1,0 +1,354 @@
+body {
+    font-family: "Helvetica", sans-serif;
+    font-size: 25px;
+    margin: 0px;
+}
+
+#main {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.tweet {
+    width: 640px;
+    color: #444;
+    margin: 40px auto;
+    display: none;
+    background: #ffaaee;
+    padding: 10px;
+}
+
+.img-container {
+    width: 150px;
+    height: 150px;
+    display: inline-block;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+}
+
+img {
+    margin: 0 auto;
+    display: block;
+}
+
+#imgs {
+    height: 200px;
+    position: relative;
+}
+
+#container {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+
+#meta {
+    /* position: absolute; */
+    /* top: 3px; */
+    margin-top: 10px;
+    text-align: center;
+    font-size: 16px;
+    color: #222;
+    font-family: monospace;
+}
+
+#twitter-template {
+    display: none;
+}
+
+
+
+.twitter-container {
+
+    /* background: #ff0000; */
+    
+    /* color: rgb(41, 47, 51); */
+    /* /\* height: 452px; *\/ */
+    /* position: relative; */
+    /* text-align: left; */
+    /* width: 589.984375px; */
+    /* perspective-origin: 294.984375px 226px; */
+    /* transform-origin: 294.984375px 226px; */
+    /* border: 0px none rgb(41, 47, 51); */
+    /* font: normal normal normal normal 14px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif; */
+    /* outline: rgb(41, 47, 51) none 0px; */
+}
+
+.twitter-main {
+    margin: 0 auto;
+    /* background: #0000ff; */
+    
+    box-sizing: border-box;
+    color: rgb(41, 47, 51);
+    overflow-wrap: break-word;
+    position: relative;
+    text-align: left;
+    width: 589.984375px;
+    word-wrap: break-word;
+    perspective-origin: 294.984375px 226px;
+    transform-origin: 294.984375px 226px;
+    /* background: rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box; */
+    /* border: 1px solid rgb(225, 232, 237); */
+    font: normal normal normal normal 14px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /* margin: 0px 0px -1px; */
+    outline: rgb(41, 47, 51) none 0px;
+    padding: 13px 15px 15px;
+}
+
+.twitter-user {
+    color: rgb(136, 153, 166);
+    height: 26px;
+    overflow-wrap: break-word;
+    text-align: left;
+    width: 557.984375px;
+    word-wrap: break-word;
+    perspective-origin: 278.984375px 13px;
+    transform-origin: 278.984375px 13px;
+    /* border: 0px none rgb(136, 153, 166); */
+    font: normal normal normal normal 14px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    outline: rgb(136, 153, 166) none 0px;
+    transition: color 0.15s ease 0s;
+}
+
+
+.twitter-user {
+    color: rgb(136, 153, 166);
+    overflow-wrap: break-word;
+    text-align: left;
+    width: 557.984375px;
+    word-wrap: break-word;
+    perspective-origin: 278.984375px 1px;
+    transform-origin: 278.984375px 1px;
+    border: 0px none rgb(136, 153, 166);
+    font: normal normal normal normal 14px/14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    outline: rgb(136, 153, 166) none 0px;
+    padding: 2px 0px 0px;
+}
+
+.twitter-user-image {
+    color: rgb(0, 132, 180);
+    display: block;
+    float: left;
+    height: 24px;
+    overflow-wrap: break-word;
+    text-align: left;
+    width: 24px;
+    word-wrap: break-word;
+    perspective-origin: 12px 12px;
+    transform-origin: 12px 12px;
+    border: 0px none rgb(0, 132, 180);
+    border-radius: 4px 4px 4px 4px;
+    font: normal normal normal normal 14px/14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0px 6px 0px 0px;
+    outline: rgb(0, 132, 180) none 0px;
+}
+
+.twitter-name {
+    color: rgb(0, 132, 180);
+    display: block;
+    float: left;
+    height: 15px;
+    max-width: 95%;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    perspective-origin: 105.328125px 7.5px;
+    transform-origin: 105.328125px 7.5px;
+    border: 0px none rgb(0, 132, 180);
+    font: normal normal normal normal 14px/14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    outline: rgb(0, 132, 180) none 0px;
+    overflow: hidden;
+}
+
+
+.twitter-handle {
+    color: rgb(136, 153, 166);
+    text-align: left;
+    white-space: nowrap;
+    border: 0px none rgb(136, 153, 166);
+    font: normal normal normal normal 13px/14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    outline: rgb(136, 153, 166) none 0px;
+}
+
+
+.tweet-contents {
+    color: rgb(41, 47, 51);
+    /* height: 399px; */
+    overflow-wrap: break-word;
+    text-align: left;
+    width: 527.984375px;
+    word-wrap: break-word;
+    perspective-origin: 263.984375px 199.5px;
+    transform-origin: 263.984375px 199.5px;
+    border: 0px none rgb(41, 47, 51);
+    font: normal normal normal normal 14px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: -5px 0px 0px 30px;
+    outline: rgb(41, 47, 51) none 0px;
+}
+
+.tweet-contents p {
+    padding: 5px 0px;
+    
+    color: #eee; /* rgb(41, 47, 51); */
+    letter-spacing: 0.259999990463257px;
+    overflow-wrap: break-word;
+    text-align: left;
+    unicode-bidi: embed;
+    white-space: pre-wrap;
+    width: 527.984375px;
+    word-wrap: break-word;
+    perspective-origin: 263.984375px 48px;
+    transform-origin: 263.984375px 48px;
+    border: 0px none rgb(41, 47, 51);
+    font: normal normal 300 normal 26px/32px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0px 0px 5px;
+    outline: rgb(41, 47, 51) none 0px;
+}
+
+.tweet-contents a, .tweet-contents .term {
+    color: rgb(0, 132, 180);
+    letter-spacing: 0.259999990463257px;
+    overflow-wrap: break-word;
+    text-align: left;
+    text-decoration: none;
+    unicode-bidi: embed;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border: 0px none rgb(0, 132, 180);
+    font: normal normal 300 normal 26px/32px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    outline: rgb(0, 132, 180) none 0px;
+}
+
+.tweet-contents a b {
+    color: rgb(0, 132, 180);
+    letter-spacing: 0.259999990463257px;
+    overflow-wrap: break-word;
+    text-align: left;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border: 0px none rgb(0, 132, 180);
+    font: normal normal 300 normal 26px/32px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    outline: rgb(0, 132, 180) none 0px;
+}
+
+.img-link {
+    color: rgb(0, 132, 180);
+    display: none;
+    letter-spacing: 0.259999990463257px;
+    overflow-wrap: break-word;
+    text-align: left;
+    text-decoration: none;
+    unicode-bidi: embed;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    perspective-origin: 50% 50%;
+    transform-origin: 50% 50%;
+    border: 0px none rgb(0, 132, 180);
+    font: normal normal 300 normal 26px/32px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    outline: rgb(0, 132, 180) none 0px;
+}
+
+.tweet-img-container {
+    color: rgb(41, 47, 51);
+    height: 262px;
+    overflow-wrap: break-word;
+    text-align: left;
+    width: 527.984375px;
+    word-wrap: break-word;
+    perspective-origin: 263.984375px 131px;
+    transform-origin: 263.984375px 131px;
+    border: 0px none rgb(41, 47, 51);
+    font: normal normal normal normal 14px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0px 0px 10px;
+    outline: rgb(41, 47, 51) none 0px;
+}
+
+
+.tweet-img-container div {
+    box-sizing: border-box;
+    color: rgb(41, 47, 51);
+    height: 262px;
+    max-height: 262px;
+    overflow-wrap: break-word;
+    text-align: center;
+    width: 527.984375px;
+    word-wrap: break-word;
+    perspective-origin: 263.984375px 131px;
+    transform-origin: 263.984375px 131px;
+    background: rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box;
+    /* border: 1px solid rgb(225, 232, 237); */
+    border-radius: 5px 5px 5px 5px;
+    font: normal normal normal normal 14px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    outline: rgb(41, 47, 51) none 0px;
+    overflow: hidden;
+}
+
+.tweet-img-container a {
+    color: rgb(0, 132, 180);
+    cursor: zoom-in;
+    display: inline-block;
+    height: 384px;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    text-align: center;
+    text-decoration: none;
+    width: 525.984375px;
+    word-wrap: break-word;
+    perspective-origin: 262.984375px 192px;
+    transform-origin: 262.984375px 192px;
+    border: 0px none rgb(0, 132, 180);
+    font: normal normal normal normal 0px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    outline: rgb(0, 132, 180) none 0px;
+}
+
+
+.tweet-img-container img {
+    color: rgb(0, 132, 180);
+    cursor: zoom-in;
+    display: inline-block;
+    height: 495.671875px;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    text-align: center;
+    vertical-align: middle;
+    width: 525.984375px;
+    word-wrap: break-word;
+    perspective-origin: 262.984375px 247.828125px;
+    transform-origin: 262.984375px 247.828125px;
+    border: 0px none rgb(0, 132, 180);
+    font: normal normal normal normal 0px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: -111px 0px 0px;
+    outline: rgb(0, 132, 180) none 0px;
+}
+
+
+
+.retweet-container {
+    background: url("retweet2.png") no-repeat;
+    display: inline-block;
+    background-size: 20px 20px; /* image's size */
+    height: 20px; /* image's height */
+    padding-left: 23px; /* image's width plus 10 px (margin between text and image) */
+
+    margin-left: 7px;
+
+    color: rgb(136, 153, 166);
+    overflow-wrap: break-word;
+    text-align: left;
+    text-decoration: none;
+    /* word-wrap: break-word; */
+    border: 0px none rgb(136, 153, 166);
+    font: normal normal normal normal 12px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    outline: rgb(136, 153, 166) none 0px;
+}
+
+.retweet-container span {
+    height: 23px; /* image's height */
+    display: table-cell;
+    vertical-align: middle;
+
+    /* display: inline; */
+    
+}
