@@ -1,16 +1,6 @@
  var socket = null;
  var isopen = false;
 
-var PORTS = {
-    "cameron": 9001,
-    "clegg": 9002,
-    "miliband": 9003,
-    "sturgeon": 9004,
-    "wood": 9005,
-    "bennett": 9006,
-    "farage": 9007
-};
-
 function build_tweet(t) {
     return '<div class="tweet">' + t + '</div>'
 }
@@ -82,7 +72,8 @@ function openSocket(port) {
     }
 }
 
-$(document).ready(function() {
+// $(document).ready(function() {
+$.getJSON('../info.json', function(infos) {
     var candidate = location.hash.substr(1);
     if (candidate.length < 3) {
         var ts = location.href.split('/');
@@ -95,7 +86,7 @@ $(document).ready(function() {
         }
     }
 
-    var port = PORTS[candidate];
+    var port = infos[candidate]['ws_port'];
     console.log('opening on port ' + port);
     openSocket(port);
 

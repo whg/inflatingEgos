@@ -66,16 +66,15 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", default="cameron", help="candidate name")
     parser.add_argument("--ip", default="0.0.0.0", help="The ip to listen on")
-    # parser.add_argument("--port",type=int, default=5005, help="The port to listen on")
     args = parser.parse_args()
 
-    cid = ti.inverse[args.c]
-    port = ti.infos[cid]['ws_port']
+
+    port = ti.infos[args.c]['ws_port']
     
     print('starting for {0} on {1}'.format(args.c, port))
     server = WebSocketServerFactory("ws://localhost:{0}".format(port), debug=False)
     MyServerProtocol.osc_ip = args.ip
-    MyServerProtocol.osc_port = ti.infos[cid]['osc_port']
+    MyServerProtocol.osc_port = ti.infos[args.c]['osc_port']
     server.protocol = MyServerProtocol
     
     

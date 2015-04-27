@@ -51,9 +51,8 @@ def data_for_url(candidate):
                         'favorite_count': favs,
                     }
                 })
-# /                print('updated', id, 'to', rets, ' ()retweets and', favs, 'favourites')
-                print('updated %s from %d (added %d) retweets, %d (added %d) favourites' %
-                      (id, rets, retdiff, favs, favdiff)
+
+                print('updated %s from %d (added %d) retweets, %d (added %d) favourites' % (id, rets, retdiff, favs, favdiff))
         
     except AssertionError:
         print('mismatch in lengths')

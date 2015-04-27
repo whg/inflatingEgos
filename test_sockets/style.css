@@ -41,9 +41,6 @@ img {
     margin: 0 auto;
 }
 
-.term {
-    color: #bbb;
-}
 
 #meta {
     /* position: absolute; */
@@ -206,7 +203,7 @@ img {
     outline: rgb(41, 47, 51) none 0px;
 }
 
-.tweet-contents a {
+.tweet-contents a, term {
     color: rgb(0, 132, 180);
     letter-spacing: 0.259999990463257px;
     overflow-wrap: break-word;
