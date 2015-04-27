@@ -55,6 +55,10 @@ img {
     font-family: monospace;
 }
 
+#twitter-template {
+    display: none;
+}
+
 //////////////////////////////////////////////////
 // twitter rip
 
@@ -74,7 +78,6 @@ img {
 .twitter-main {
     box-sizing: border-box;
     color: rgb(41, 47, 51);
-    /* height: 452px; */
     overflow-wrap: break-word;
     position: relative;
     text-align: left;
@@ -183,8 +186,9 @@ img {
 }
 
 .tweet-contents p {
+    padding: 10px 0px;
+    
     color: rgb(41, 47, 51);
-    height: 96px;
     letter-spacing: 0.259999990463257px;
     overflow-wrap: break-word;
     text-align: left;

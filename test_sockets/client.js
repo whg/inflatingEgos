@@ -67,6 +67,18 @@ $(document).ready(function() {
     var port = PORTS[candidate];
     console.log('opening on port ' + port);
     openSocket(port);
+
+    $("#main").prepend($("#twitter-template").html());
+
+    var t = $("#main .twitter-container:first");
+    console.log(t);
+    t.find(".twitter-name b").text("David Cameron");
+    t.find(".twitter-handle").text("@David_Cameron");
+    t.find(".twitter-user img").attr("src", "https://pbs.twimg.com/profile_images/567663852796399617/mYltRqyb_normal.jpeg");
+    t.find(".tweet-contents p").text("This is a tweet");
+    t.find(".tweet-img-container img").attr("src", "https://pbs.twimg.com/media/CDlILU9W0AAFB0O.png:large");
+    
+    
 });
 
 function sendText() {
