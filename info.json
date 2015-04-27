@@ -90,13 +90,15 @@
         "osc_port":8003,
         "id_str":"61781260",
         "ws_port":9003,
+        "ip": "192.168.0.84",
         "tags":[
             "@Ed_Miliband",
             "@UKLabour",
             "#labour",
             "#VoteLabour",
             "#LabourManifesto"
-        ]
+        ],
+        "colour": { "r": 150, "g": 60, "b": 60 }
     },
     "sturgeon":{
         "name":"Nicola Sturgeon",

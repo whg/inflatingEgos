@@ -141,7 +141,7 @@ class InflatedEgos(StreamListener):
                         print('no ip for %s' % (candidate))
                         break
 
-                    v['ip'] = "localhost"
+                    # v['ip'] = "localhost"
                     self.clients[candidate] = udp_client.UDPClient(v['ip'], v['osc_port'])
                     
                 mess = tweet_message(data)
