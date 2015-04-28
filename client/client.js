@@ -65,6 +65,7 @@ function insert_tweet(arg) {
         var b = candidate_data.colour.b;
         // var r = v, g = v, b = v;
         $(e).css({ "background": "rgba("+r+","+g+","+b+","+(1.0-v)+")" });
+        $(e).find("div.container").css({ "background": "rgba("+r+","+g+","+b+","+(0.3-v*0.5)+")" });
     });
 }
 
@@ -79,9 +80,18 @@ function favourites_and_retweets(arg) {
     t.css( { opacity: 0, background: "white" });
     t.addClass("status");
 
-    t.find(".status-container").toggleClass("hide");
-    t.find(".status-container .retweets").text(arg.retweets);
-    t.find(".status-container .favourites").text(arg.favourites);
+    if (arg.retweets) {
+        t.find(".status-container").toggleClass("hide");
+        t.find(".status-container .retweets").text(arg.retweets);
+        t.find(".status-container .favourites").text(arg.favourites);
+    }
+    else if (arg.amount) {
+        t.find(".status-container").toggleClass("hide");
+        t.find(".status-container .amount").text(arg.amount);
+        t.find(".status-container .retweet-img").hide();
+        t.find(".status-container .favourite-img").hide();
+    }
+    
     
     $("#main").animate({"opacity": 0 }, 2000, function() {
         $("#main").toggle(false);
@@ -112,6 +122,7 @@ var main = {
     },
     post: insert_tweet,
     personal_update: favourites_and_retweets,
+    action_update: favourites_and_retweets
     
 };
 

@@ -15,7 +15,7 @@ from collections import defaultdict
 from twitter_infos import infos, other_tags
 from osc_helpers import *
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
 consumer_key="CQ8wPwKADz9FheAOui23uYUjW"
@@ -81,8 +81,9 @@ class InflatedEgos(StreamListener):
                 # except RuntimeError:
                 #     pass
                 # osc_client.send(mess)
-                
-        match = re.findall(r'#infeg[a-z 1-9\-]+.', data['text'])
+
+        rexp = r'#infeg[a-z 1-9\-]+. '
+        match = re.findall(rexp, data['text'])
 
         if match:
             logging.info('found match')
@@ -91,8 +92,8 @@ class InflatedEgos(StreamListener):
                 candidate = vs[1]
                 amount = int(vs[2][:-1])
                 logging.info('affecting candidate')
-                affect_candidate(candidate, amount)
-                
+                data['text'] = re.sub(rexp, '', data['text'])
+                affect_candidate(candidate, data, amount)
                 
             except:
                 logging.info('invalid instruction')

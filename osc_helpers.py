@@ -77,9 +77,17 @@ def personal_update(tweet_data, favs, retweets):
     })
 
 
+def action_update(tweet_data, amount):
+    arg = tweet_arg(tweet_data)
+    arg['amount'] = amount
+    return osc_message({
+        'func': 'action_update',
+        'arg': arg
+    })
+    
 balloon_osc = None
     
-def affect_candidate(candidate, amount):
+def affect_candidate(candidate, tweet_data, amount):
     global balloon_osc
     if not balloon_osc:
         balloon_osc = UDPClient('localhost', 5005)
@@ -90,5 +98,7 @@ def affect_candidate(candidate, amount):
     msg.add_arg(amount)
     balloon_osc.send(msg.build())
     logging.info("sent instruction %s, %d" % (candidate, amount))
-    
+
+    send_message(candidate, action_update(tweet_data, amount))
+    logging.info("sent instruction to candidate")
 

@@ -61,7 +61,7 @@ img {
 
 .twitter-container {
 
-    margin: 10px 0;
+    margin-bottom: 10px;
 
     
     /* background: #ff0000; */
@@ -80,7 +80,7 @@ img {
 
 .twitter-main {
     margin: 0 auto;
-    /* background: #0000ff; */
+    background: #fff;
     
     box-sizing: border-box;
     color: rgb(41, 47, 51);
@@ -96,7 +96,11 @@ img {
     font: normal normal normal normal 14px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
     /* margin: 0px 0px -1px; */
     outline: rgb(41, 47, 51) none 0px;
-    padding: 13px 15px 15px;
+    /* padding: 13px 15px 15px; */
+}
+
+.twitter-main div.container .pad {
+    padding: 10px;
 }
 
 .twitter-user {
@@ -115,19 +119,19 @@ img {
 }
 
 
-.twitter-user {
-    color: rgb(136, 153, 166);
-    overflow-wrap: break-word;
-    text-align: left;
-    width: 557.984375px;
-    word-wrap: break-word;
-    perspective-origin: 278.984375px 1px;
-    transform-origin: 278.984375px 1px;
-    border: 0px none rgb(136, 153, 166);
-    font: normal normal normal normal 14px/14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    outline: rgb(136, 153, 166) none 0px;
-    padding: 2px 0px 0px;
-}
+/* .twitter-user { */
+/*     color: rgb(136, 153, 166); */
+/*     overflow-wrap: break-word; */
+/*     text-align: left; */
+/*     width: 557.984375px; */
+/*     word-wrap: break-word; */
+/*     perspective-origin: 278.984375px 1px; */
+/*     transform-origin: 278.984375px 1px; */
+/*     border: 0px none rgb(136, 153, 166); */
+/*     font: normal normal normal normal 14px/14px 'Helvetica Neue', Helvetica, Arial, sans-serif; */
+/*     outline: rgb(136, 153, 166) none 0px; */
+/*     padding: 2px 0px 0px; */
+/* } */
 
 .twitter-user-image {
     color: rgb(0, 132, 180);
@@ -214,7 +218,7 @@ img {
 }
 
 .tweet-contents a, .tweet-contents .term {
-    color: #fff; /* rgb(0, 132, 180); */
+    color: rgb(0, 132, 180);
     letter-spacing: 0.259999990463257px;
     overflow-wrap: break-word;
     text-align: left;
@@ -319,7 +323,8 @@ img {
     overflow-wrap: break-word;
     text-align: center;
     vertical-align: middle;
-    width: 525.984375px;
+    /* width: 525.984375px; */
+    width: 515.984375px
     word-wrap: break-word;
     perspective-origin: 262.984375px 247.828125px;
     transform-origin: 262.984375px 247.828125px;

@@ -3,6 +3,8 @@ from __future__ import print_function
 import serial
 import sys
 import threading
+import time
+
 from pythonosc import dispatcher
 from pythonosc.osc_server import ForkingOSCUDPServer, ThreadingOSCUDPServer
 
@@ -67,6 +69,8 @@ def instruction(ud, candidate, time):
 
     number = candidate_numbers[candidate]
     # time = args[1]
+
+    time.sleep(5)
     
     if time == 0:
         stop(number)
