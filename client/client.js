@@ -11,7 +11,7 @@ function build_tweet(t) {
 function highlight_tags(tweet) {
     var ltweet = tweet.toLowerCase();
 
-    console.log(candidate_data.tags);
+    // console.log(candidate_data.tags);
     var terms = candidate_data.tags;
     return tweet.parseHashtag().parseUsername();
 }
@@ -33,7 +33,7 @@ function add_data_from_arg(t, arg) {
     function add_media(url) {
         if (url) {
             t.find(".tweet-img-container img").attr("src", url);
-            console.log("added img");
+            // console.log("added img");
         }
         else {
             t.find(".tweet-img-container").remove();
@@ -56,15 +56,15 @@ function insert_tweet(arg) {
     t.slideDown(500);
     // console.log("slide down");
     
-    $(".twitter-container:gt(" + NUMBER_LIMIT + ")").remove();
+    $("#main .twitter-container:gt(" + NUMBER_LIMIT + ")").remove();
 
-    $(".twitter-container").each(function(i, e) {
-        var v = i * 10;
-        var r = candidate_data.colour.r + v;
-        var g = candidate_data.colour.g + v;
-        var b = candidate_data.colour.b + v;
+    $("#main .twitter-container").each(function(i, e) {
+        var v = i * 0.15;
+        var r = candidate_data.colour.r;
+        var g = candidate_data.colour.g;
+        var b = candidate_data.colour.b;
         // var r = v, g = v, b = v;
-        $(e).css({ "background": "rgba("+r+","+g+","+b+",255)" });
+        $(e).css({ "background": "rgba("+r+","+g+","+b+","+(1.0-v)+")" });
     });
 }
 
@@ -72,6 +72,8 @@ function favourites_and_retweets(arg) {
     $("#status").prepend($("#twitter-template").html());
     var t = $("#status .twitter-container:first");
 
+    console.log("starting favs and rets with " + arg['tweet']);
+    
     add_data_from_arg(t, arg);
     
     t.css( { opacity: 0, background: "white" });
@@ -81,13 +83,15 @@ function favourites_and_retweets(arg) {
     t.find(".status-container .retweets").text(arg.retweets);
     t.find(".status-container .favourites").text(arg.favourites);
     
-    $("#main").animate({"opacity": 0 }, 1000, function() {
+    $("#main").animate({"opacity": 0 }, 2000, function() {
         $("#main").toggle(false);
-        t.animate({"opacity": 1}, 1000, function() {
-            $(this).css({ "position": "relative" });
+        t.animate({"opacity": 1}, 2000, function() {
+            t.css({ "position": "relative" });
             var that = this;
             setTimeout(function() {
-                $(that).animate({ "top": -2000 }, 2000, function() {
+                console.log(t);
+                console.log("animating " );
+                $(t).animate({ "top": -2000 }, 2000, function() {
                     $("#status").html("");
                     $("#main").toggle(true);
                     $("#main").animate({ "opacity": 1 }, 1000, function() {

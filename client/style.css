@@ -61,6 +61,9 @@ img {
 
 .twitter-container {
 
+    margin: 10px 0;
+
+    
     /* background: #ff0000; */
     
     /* color: rgb(41, 47, 51); */
@@ -130,17 +133,19 @@ img {
     color: rgb(0, 132, 180);
     display: block;
     float: left;
-    height: 24px;
+
     overflow-wrap: break-word;
     text-align: left;
-    width: 24px;
+    width: 32px;
+    height: 32px;
     word-wrap: break-word;
     perspective-origin: 12px 12px;
     transform-origin: 12px 12px;
     border: 0px none rgb(0, 132, 180);
     border-radius: 4px 4px 4px 4px;
     font: normal normal normal normal 14px/14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    margin: 0px 6px 0px 0px;
+    margin: 0px 0px 0px 0px;
+    margin-left: -9px;
     outline: rgb(0, 132, 180) none 0px;
 }
 
@@ -160,6 +165,7 @@ img {
     font: normal normal normal normal 14px/14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
     outline: rgb(0, 132, 180) none 0px;
     overflow: hidden;
+    margin: 10px 0px 0px 6px;
 }
 
 
@@ -184,7 +190,7 @@ img {
     transform-origin: 263.984375px 199.5px;
     border: 0px none rgb(41, 47, 51);
     font: normal normal normal normal 14px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    margin: -5px 0px 0px 30px;
+    margin: 0px 0px 0px 30px;
     outline: rgb(41, 47, 51) none 0px;
 }
 
@@ -208,7 +214,7 @@ img {
 }
 
 .tweet-contents a, .tweet-contents .term {
-    color: rgb(0, 132, 180);
+    color: #fff; /* rgb(0, 132, 180); */
     letter-spacing: 0.259999990463257px;
     overflow-wrap: break-word;
     text-align: left;
@@ -286,7 +292,7 @@ img {
 }
 
 .tweet-img-container a {
-    color: rgb(0, 132, 180);
+    color: #fff; /* rgb(0, 132, 180); */
     cursor: zoom-in;
     display: inline-block;
     height: 384px;
@@ -372,7 +378,7 @@ img {
 }
 
 .status {
-    margin-top: 300px;
+    margin-top: 500px;
 }
 
 .hide {

@@ -4,6 +4,7 @@ import requests
 from lxml import html
 from pymongo import MongoClient
 import time
+import logging
 
 from twitter_infos import infos
 from osc_helpers import *
@@ -61,20 +62,21 @@ def data_for_url(candidate):
 
                 
 
-                print('updated %s from %d (added %d) retweets, %d (added %d) favourites' % (id, rets, retdiff, favs, favdiff))
+                logging.debug('updated %s from %d (added %d) retweets, %d (added %d) favourites' % (id, rets, retdiff, favs, favdiff))
 
                 yield (doc, retdiff, favdiff)
         
     except AssertionError:
-        print('mismatch in lengths')
+        logging.debug('mismatch in lengths')
 
 
 def all_updates():
     for candidate_data in infos.values():
-        for tweet_data, fav, diff in data_for_url(candidate_data):
-            message = personal_update(tweet_data, fav, diff)
-            send_message(candidate_data['short_name'], message)
-            break
+        for tweet_data, favs, rets in data_for_url(candidate_data):
+            if favs > 10 or rets > 10:                
+                message = personal_update(tweet_data, favs, rets)
+                send_message(candidate_data['short_name'], message)
+                break
 
 
 def poll_candidates(t=10):
@@ -85,7 +87,7 @@ def poll_candidates(t=10):
             
     thread = threading.Thread(target=cb)
     thread.start()
-    print('started poll_candidates thread')
+    logging.info('started poll_candidates thread')
         
 if __name__ == "__main__":
    
