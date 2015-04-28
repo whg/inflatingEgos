@@ -6,11 +6,11 @@ import requests
 import sqlite3
 import json
 import logging
+import threading
+import time
 from datetime import datetime
 from itertools import chain
 from collections import defaultdict
-from pythonosc import udp_client
-from pythonosc import osc_message_builder
 
 from twitter_infos import infos
 from osc_helpers import *
@@ -24,77 +24,11 @@ consumer_secret="O0YPIAD5LSmIs5zET8WuBGYviAOcIzhvc2INTbsJaN3YTzy9fA"
 access_token="17090112-SWzw6lipXUNMADiIpFhRgvxCBdaV1cqWy3cdMaQIZ"
 access_token_secret="LZNdYAmsb3a3XhGHTt5jsVcm5aAtUM6dJUxfTTFpLxuRM"
 
-conn = None
 
 from sentiment import get_sentiment, get_sentiment2
+from saving import *
 
 osc_client = None
-
-def construct_tweet(candidate, data, sentiment_func=None):
-    """Make a dictionary to of the tweet + analysis + candidate"""
-    
-    row = {
-        'id': data['id_str'],
-        'tweet': data['text'],
-        'posted_by': data['user']['name'],
-        'timestamp': datetime.fromtimestamp(int(data['timestamp_ms']) / 1000.0),
-        'candidate': candidate,
-    }
-
-    if sentiment_func:
-        try:
-            print(row['tweet'])
-            sentiment = sentiment_func(data['text'])
-            row.update(sentiment)
-            print(sentiment)
-        except:
-            print("can't get sentiment")
-            pass
-
-    return row
-
-mongo_col = None
-def add_row_mongo(data):
-    global mongo_col
-    if not mongo_col:
-        from pymongo import MongoClient
-        mongo = MongoClient()
-        mongo_col = mongo["egos"]["main"]
-
-    mongo_col.insert(data)
-    logging.info('inserted %s into mongo' % data['id'])
-    
-def add_row(row, table='tweets4'):
-    """Given the json from a tweet and candidate add to the SQLite db
-    :params:
-    :candidate: this is the string from the keys of the  terms.py dict
-    :data: a tweet in JSON
-    """
-    
-    global conn
-    
-    names = ','.join(row.keys())
-    marks = ','.join(['?' for _ in row])
-    # table = 'tweets3'
-    # table = 'raw_tweets'
-    # table = 'logging'
-
-
-
-    logging.debug(names)
-    logging.debug(list(row.values()))
-
-    qstring = 'INSERT INTO {table} ({names}) VALUES ({marks})'.format(**locals())
-
-    try:
-        conn.execute(qstring, list(row.values()))
-        logging.info('inserted row into database')
-    except sqlite3.IntegrityError as e:
-        logging.info('bad values!')
-        logging.info(e)
-        
-    conn.commit()
-
 
 class InflatedEgos(StreamListener):
 
@@ -124,10 +58,10 @@ class InflatedEgos(StreamListener):
 
         add_row_mongo(data)
 
-        global osc_client
-        if not osc_client:
-            # osc_client = udp_client.UDPClient('192.168.0.83', 5005)
-            osc_client = udp_client.UDPClient('localhost', 5005)
+        # global osc_client
+        # if not osc_client:
+        #     # osc_client = udp_client.UDPClient('192.168.0.83', 5005)
+        #     osc_client = udp_client.UDPClient('localhost', 5005)
             
 
         import re
@@ -136,19 +70,24 @@ class InflatedEgos(StreamListener):
             
             if re.search(r, data['text'], re.IGNORECASE):
                 candidate = v['short_name']
-                if candidate not in self.clients:
-                    if not 'ip' in v:
-                        print('no ip for %s' % (candidate))
-                        break
+                # if 'client' not in infos[candidate]:
+                #     if not 'ip' in v:
+                #         print('no ip for %s' % (candidate))
+                #         break
 
-                    # v['ip'] = "localhost"
-                    self.clients[candidate] = udp_client.UDPClient(v['ip'], v['osc_port'])
+                #     # v['ip'] = "localhost"
+                #     infos[candidate]['client'] = udp_client.UDPClient(v['ip'], v['osc_po
+                    # rt'])
                     
                 mess = tweet_message(data)
+
+                send_message(candidate, mess)
                 
-                
-                print('sending %s to %s on port %s' % (mess, candidate, v['osc_port']))
-                self.clients[candidate].send(mess)
+                # print('sending %s to %s on port %s on %s' % (mess, candidate, v['osc_port'], v['ip']))
+                # try:
+                #     infos[candidate]['client'].send(mess)
+                # except RuntimeError:
+                #     pass
                 # osc_client.send(mess)
 
             
