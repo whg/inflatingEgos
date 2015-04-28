@@ -48,8 +48,8 @@
         "osc_port":8001,
         "id_str":"103065157",
         "ws_port":9001,
-        "ip": "192.168.0.83",
         "short_name":"cameron",
+        "ip": "192.168.0.84",
         "colour": { "r": 60, "g": 60, "b": 150 }
     },
     "wood":{
@@ -98,7 +98,7 @@
             "#VoteLabour",
             "#LabourManifesto"
         ],
-        "colour": { "r": 150, "g": 60, "b": 60 }
+        "colour": { "r": 207, "g": 17, "b": 52 }
     },
     "sturgeon":{
         "name":"Nicola Sturgeon",

@@ -12,10 +12,10 @@ from datetime import datetime
 from itertools import chain
 from collections import defaultdict
 
-from twitter_infos import infos
+from twitter_infos import infos, other_tags
 from osc_helpers import *
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 consumer_key="CQ8wPwKADz9FheAOui23uYUjW"
@@ -70,27 +70,32 @@ class InflatedEgos(StreamListener):
             r = '|'.join(v['tags'])
             
             if re.search(r, data['text'], re.IGNORECASE):
-                candidate = v['short_name']
-                # if 'client' not in infos[candidate]:
-                #     if not 'ip' in v:
-                #         print('no ip for %s' % (candidate))
-                #         break
-
-                #     # v['ip'] = "localhost"
-                #     infos[candidate]['client'] = udp_client.UDPClient(v['ip'], v['osc_po
-                    # rt'])
-                    
+                candidate = v['short_name']                    
                 mess = tweet_message(data)
 
                 send_message(candidate, mess)
-                
-                # print('sending %s to %s on port %s on %s' % (mess, candidate, v['osc_port'], v['ip']))
+            
+        # print('sending %s to %s on port %s on %s' % (mess, candidate, v['osc_port'], v['ip']))
                 # try:
                 #     infos[candidate]['client'].send(mess)
                 # except RuntimeError:
                 #     pass
                 # osc_client.send(mess)
+                
+        match = re.findall(r'#infeg[a-z 1-9\-]+.', data['text'])
 
+        if match:
+            logging.info('found match')
+            try:
+                vs = match[0].split()
+                candidate = vs[1]
+                amount = int(vs[2][:-1])
+                logging.info('affecting candidate')
+                affect_candidate(candidate, amount)
+                
+                
+            except:
+                logging.info('invalid instruction')
             
             
         
@@ -156,8 +161,10 @@ if __name__ == '__main__':
     terms = list(chain(*[e['tags'] for e in infos.values()]))
     follows = [e['id_str'] for e in infos.values()]
 
-    poll_candidates()
+    # poll_candidates(10)
     
+    terms.extend(other_tags)
+    logging.info(terms)
     try:
         stream.filter(track=terms, follow=follows)
     except KeyboardInterrupt:

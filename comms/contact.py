@@ -2,11 +2,24 @@ from __future__ import print_function
 
 import serial
 import sys
+import threading
+from pythonosc import dispatcher
+from pythonosc.osc_server import ForkingOSCUDPServer, ThreadingOSCUDPServer
 
 us = True
 
+candidate_numbers = {
+    'farage': 0,
+    'cameron': 1,
+    'clegg': 2,
+    'miliband': 3,
+    'wood': 4,
+    'sturgeon': 5,
+    'bennett': 6,
+}
+
 if us:
-    se = serial.Serial('/dev/cu.usbserial-A9ORRL9X')
+    se = serial.Serial('/dev/tty.usbserial-A403999Z')
 else:
     class DummySerial():
         def close(self):
@@ -16,14 +29,18 @@ else:
 
     se = DummySerial()
 
-def gc(c, n, t):
-    return '?%s%s%s!' % (c, chr(n), chr(t))
+def gc(c, n, t=0):
+    s = '?%s%s%s!' % (c, chr(n), chr(t))
+    return bytes(s, 'utf-8')
     
 def inflate(number, time=1):
     se.write(gc('i', number, time))
 
 def deflate(number, time=1):
     se.write(gc('d', number, time))
+
+def stop(number):
+    se.write(gc('s', number))
     
 def process(command):
     tokens = command.split()
@@ -45,19 +62,42 @@ def process(command):
     elif func == 'd':
         deflate(number, time)
     
+        
+def instruction(ud, candidate, time):
 
-try:
-    while True:
-        # input()
-        i = raw_input()
-        process(i)
-except KeyboardInterrupt:
-    sys.stdout.write('\rbye\n')
-    sys.stdout.flush()
-except SyntaxError as e:
-    print(e)
-
-
+    number = candidate_numbers[candidate]
+    # time = args[1]
     
+    if time == 0:
+        stop(number)
+    elif time > 0:
+        inflate(number, time)
+    elif time < 0:
+        deflate(number, -time)
+
+    print("------ instruction %s with %d" % (number, time))
+
+if __name__ == "__main__":
+    try:
+
+        dispatch = dispatcher.Dispatcher()
+        dispatch.map("/instruction", instruction)
+
+        port = 5005
+        osc_server = ForkingOSCUDPServer(('localhost', port), dispatch)
+        server_thread = threading.Thread(target=osc_server.serve_forever)
+        server_thread.start()
+        print('started osc server on port %s' % port)
+
+        while True:
+            # input()
+            i = input()
+            process(i)
+    except KeyboardInterrupt:
+        sys.stdout.write('\rbye\n')
+        sys.stdout.flush()
+    except SyntaxError as e:
+        print(e)
     
-se.close()
+    finally:
+        se.close()

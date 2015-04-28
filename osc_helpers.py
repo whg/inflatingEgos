@@ -1,5 +1,6 @@
 from pythonosc.udp_client import UDPClient
 from pythonosc.osc_message_builder import OscMessageBuilder
+import logging
 import json
 import re
 
@@ -11,7 +12,7 @@ def osc_message(d):
     """
     create OSC message from a dict
     """
-    msg = OscMessageBuilder(address = "/send")
+    msg = OscMessageBuilder(address="/send")
     msg.add_arg(json.dumps(d))
     return msg.build()
 
@@ -21,14 +22,14 @@ def send_message(candidate, message):
     if candidate not in clients:
         v = infos[candidate]
         if 'ip' not in v:
-            print('no ip for %s' % (candidate))
+            logging.debug('no ip for %s' % (candidate))
             return
             
         clients[candidate] = UDPClient(v['ip'], v['osc_port'])
 
     clients[candidate].send(message)
     
-    print('sent message to {0}'.format(candidate))
+    logging.debug('sent message to {0}'.format(candidate))
     
 def assign_user(d, user):
     d['name'] = user['name']
@@ -45,7 +46,7 @@ def tweet_arg(data):
         assign_user(arg, data['retweeted_status']['user'])
         arg['retweeted-by'] = data['user']['name']
         arg['tweet'] = data['text'].split(': ')[1]
-        print("added retweet!!!!!!")
+        # print("added retweet!!!!!!")
     else:
         assign_user(arg, data['user'])
     
@@ -74,3 +75,20 @@ def personal_update(tweet_data, favs, retweets):
         'func': 'personal_update',
         'arg': arg
     })
+
+
+balloon_osc = None
+    
+def affect_candidate(candidate, amount):
+    global balloon_osc
+    if not balloon_osc:
+        balloon_osc = UDPClient('localhost', 5005)
+
+
+    msg = OscMessageBuilder("/instruction")
+    msg.add_arg(candidate)
+    msg.add_arg(amount)
+    balloon_osc.send(msg.build())
+    logging.info("sent instruction %s, %d" % (candidate, amount))
+    
+

@@ -114,6 +114,7 @@ import json
 import os
 infos = json.load(open(os.path.join(os.path.dirname(__file__), 'info.json')))
 
+other_tags = ["#infeg"]
     
 # from itertools import chain
 # terms = list(chain(*[e['tags'] for e in infos.values()]))
