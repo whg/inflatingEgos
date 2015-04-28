@@ -1,10 +1,12 @@
 from __future__ import print_function
-from threading import Thread
+import threading
 import requests
 from lxml import html
 from pymongo import MongoClient
+import time
 
 from twitter_infos import infos
+from osc_helpers import *
 
 collection = None
 
@@ -13,6 +15,11 @@ def data_for_url(candidate):
     """
     candiate: item from infos dictionary
     """
+    global collection
+    
+    if not collection:
+         mongo = MongoClient()
+         collection = mongo["egos"]["main"]
     
     response = requests.get(candidate['url'])
     s = html.fromstring(response.text)
@@ -52,15 +59,36 @@ def data_for_url(candidate):
                     }
                 })
 
+                
+
                 print('updated %s from %d (added %d) retweets, %d (added %d) favourites' % (id, rets, retdiff, favs, favdiff))
+
+                yield (doc, retdiff, favdiff)
         
     except AssertionError:
         print('mismatch in lengths')
 
 
+def all_updates():
+    for candidate_data in infos.values():
+        for tweet_data, fav, diff in data_for_url(candidate_data):
+            message = personal_update(tweet_data, fav, diff)
+            send_message(candidate_data['short_name'], message)
+            break
+
+
+def poll_candidates(t=10):
+    def cb():
+        while True:
+            all_updates()
+            time.sleep(t)
+            
+    thread = threading.Thread(target=cb)
+    thread.start()
+    print('started poll_candidates thread')
+        
 if __name__ == "__main__":
-    mongo = MongoClient()
-    collection = mongo["egos"]["main"]
+   
 
 
     urls = [e['url'] for e in infos.values()]

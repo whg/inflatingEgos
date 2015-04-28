@@ -34,11 +34,10 @@ def assign_user(d, user):
     d['name'] = user['name']
     d['handle'] = user['screen_name']
     d['user-img-url'] = user['profile_image_url']
-    
-def tweet_message(data):
 
-    # tweet = re.sub('http:/.+ ', '', data['text'])
-    tweet = re.sub(r'http://[a-zA-Z0-9./…]+(?:\s+|$)', '', data['text'])
+
+def tweet_arg(data):
+    tweet = re.sub(r'(http|https)://[a-zA-Z0-9./…]+(?:\s+|$)', '', data['text'])
     
     arg = { 'tweet': tweet }
     
@@ -56,19 +55,22 @@ def tweet_message(data):
     except KeyError:
         pass
 
+    return arg
+        
+def tweet_message(data):
     
+    arg = tweet_arg(data)
         
     return osc_message({
         'func': 'post',
         'arg': arg
     })
 
-def personal_update(tweet, favs, retweets):
+def personal_update(tweet_data, favs, retweets):
+    arg = tweet_arg(tweet_data)
+    arg['favourites'] = favs
+    arg['retweets'] = retweets
     return osc_message({
         'func': 'personal_update',
-        'arg': {
-            'tweet': tweet,
-            'favourites': favs,
-            'retweets': retweets
-        }
+        'arg': arg
     })

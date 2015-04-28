@@ -191,7 +191,7 @@ img {
 .tweet-contents p {
     padding: 5px 0px;
     
-    color: #eee; /* rgb(41, 47, 51); */
+    color: rgb(41, 47, 51);
     letter-spacing: 0.259999990463257px;
     overflow-wrap: break-word;
     text-align: left;
@@ -278,7 +278,7 @@ img {
     perspective-origin: 263.984375px 131px;
     transform-origin: 263.984375px 131px;
     background: rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box;
-    /* border: 1px solid rgb(225, 232, 237); */
+    /* border: 1px soligd rgb(225, 232, 237); */
     border-radius: 5px 5px 5px 5px;
     font: normal normal normal normal 14px/19.25px 'Helvetica Neue', Helvetica, Arial, sans-serif;
     outline: rgb(41, 47, 51) none 0px;
@@ -351,4 +351,30 @@ img {
 
     /* display: inline; */
     
+}
+
+.status-container {
+    text-align: center;
+}
+
+.status-container span {
+    font-size: 40px;
+    font-weight: bold;
+    margin: 10px 40px;
+}
+
+.retweet-img {
+    color: #77B255;
+}
+
+.favourite-img {
+    color: #FFAC33;
+}
+
+.status {
+    margin-top: 300px;
+}
+
+.hide {
+    display: none;
 }

@@ -16,11 +16,7 @@ function highlight_tags(tweet) {
     return tweet.parseHashtag().parseUsername();
 }
 
-function insert_tweet(arg) {
-    $("#main").prepend($("#twitter-template").html());
-
-    var t = $("#main .twitter-container:first");
-
+function add_data_from_arg(t, arg) {
     t.find(".twitter-name b").text(arg["name"]);
     t.find(".twitter-user a").attr("href", "http://twitter.com/" + arg["handle"]);
     t.find(".twitter-handle").text("@" + arg["handle"]);
@@ -46,7 +42,14 @@ function insert_tweet(arg) {
     }
 
     add_media(arg["media"]);
+}
 
+function insert_tweet(arg) {
+    $("#main").prepend($("#twitter-template").html());
+
+    var t = $("#main .twitter-container:first");
+
+    add_data_from_arg(t, arg);
     
 
     t.css({ display: "none" });
@@ -65,6 +68,37 @@ function insert_tweet(arg) {
     });
 }
 
+function favourites_and_retweets(arg) {
+    $("#status").prepend($("#twitter-template").html());
+    var t = $("#status .twitter-container:first");
+
+    add_data_from_arg(t, arg);
+    
+    t.css( { opacity: 0, background: "white" });
+    t.addClass("status");
+
+    t.find(".status-container").toggleClass("hide");
+    t.find(".status-container .retweets").text(arg.retweets);
+    t.find(".status-container .favourites").text(arg.favourites);
+    
+    $("#main").animate({"opacity": 0 }, 1000, function() {
+        $("#main").toggle(false);
+        t.animate({"opacity": 1}, 1000, function() {
+            $(this).css({ "position": "relative" });
+            var that = this;
+            setTimeout(function() {
+                $(that).animate({ "top": -2000 }, 2000, function() {
+                    $("#status").html("");
+                    $("#main").toggle(true);
+                    $("#main").animate({ "opacity": 1 }, 1000, function() {
+                    });
+                }); 
+            }, 3000);
+        });
+    });
+    
+}
+
 var main = {
     write: function (message, number) {
         var main = document.querySelector("#main");
@@ -73,6 +107,7 @@ var main = {
         $(".tweet:gt(5)").remove();
     },
     post: insert_tweet,
+    personal_update: favourites_and_retweets,
     
 };
 

@@ -27,6 +27,7 @@ access_token_secret="LZNdYAmsb3a3XhGHTt5jsVcm5aAtUM6dJUxfTTFpLxuRM"
 
 from sentiment import get_sentiment, get_sentiment2
 from saving import *
+from scrape import poll_candidates
 
 osc_client = None
 
@@ -154,6 +155,8 @@ if __name__ == '__main__':
 
     terms = list(chain(*[e['tags'] for e in infos.values()]))
     follows = [e['id_str'] for e in infos.values()]
+
+    poll_candidates()
     
     try:
         stream.filter(track=terms, follow=follows)

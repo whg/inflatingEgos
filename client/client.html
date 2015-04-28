@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
     <script type="text/javascript" src="../candidate_faces/jquery.min.js"></script>
     <script type="text/javascript" src="twitter-parsing.js"></script>
@@ -14,6 +15,7 @@
   <div id="twitter-template">
     <div class="twitter-container">
 		  <div class="twitter-main">
+  
         <div class="retweet-container">
           <span></span>
         </div>
@@ -34,6 +36,12 @@
 					  </div>
 				  </div>
 		    </div>
+
+        <div class="status-container hide">
+          <span class="retweet-img"> <i class="fa fa-retweet"></i> <span class="retweets">34</span></span> 
+          <span class="favourite-img"> <i class="fa fa-star"></i>  <span class="favourites">23</span></span>  
+        </div>
+        
 	    </div>
     </div>
   </div>
@@ -41,41 +49,45 @@
 
 
 
-
+<div id="main">
   
-<!-- 	  <div class="twitter-container"> -->
-<!-- 	<div class="twitter-main"> -->
+	<div class="twitter-container">
 
 
     
-<!-- 		<div class="twitter-user"> -->
-<!-- 			<a> -->
-<!--         <img src="https://pbs.twimg.com/profile_images/567663852796399617/mYltRqyb_normal.jpeg" alt="" class="twitter-user-image" /> -->
-<!--         <span class="twitter-name"> -->
-<!--           <b>David Cameron</b> -->
-<!--           <span class="twitter-handle"> -->
-<!--             @David_Cameron -->
-<!--           </span> -->
-<!--       </a> -->
-<!-- 		</div> -->
+	<div class="twitter-main">
+
     
-<!-- 		<div class="tweet-contents"> -->
-<!-- 			<p>Let's stick with the plan that's working - the clear message from 5,000 small business owners. <a href="/hashtag/SecureTheRecovery?src=hash">#<b>SecureTheRecovery</b></a> <a href="http://t.co/takySDj0ja" class="img-link">pic.twitter.com/takySDj0ja</a></p> -->
-<!-- 			<div class="tweet-img-container"> -->
-<!-- 				<div> -->
-<!-- 					<a href="//twitter.com/David_Cameron/status/592584234910494721/photo/1"><img src="https://pbs.twimg.com/media/CDlILU9W0AAFB0O.png:large" alt="Embedded image permalink"/></a> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 		</div> -->
-<!-- 	</div> -->
-<!-- </div> -->
+    
+		<div class="twitter-user">
+			<a>
+        <img src="https://pbs.twimg.com/profile_images/567663852796399617/mYltRqyb_normal.jpeg" alt="" class="twitter-user-image" />
+        <span class="twitter-name">
+          <b>David Cameron</b>
+          <span class="twitter-handle">
+            @David_Cameron
+          </span>
+      </a>
+		</div>
+    
+		<div class="tweet-contents">
+			<p>Let's stick with the plan that's working - the clear message from 5,000 small business owners. <a href="/hashtag/SecureTheRecovery?src=hash">#<b>SecureTheRecovery</b></a> <a href="http://t.co/takySDj0ja" class="img-link">pic.twitter.com/takySDj0ja</a></p>
+			<div class="tweet-img-container">
+				<div>
+					<a href="//twitter.com/David_Cameron/status/592584234910494721/photo/1"><img src="https://pbs.twimg.com/media/CDlILU9W0AAFB0O.png:large" alt="Embedded image permalink"/></a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 
 
       
-      <div id="main"></div>
+      
+      </div>
 
-
+<div id="status"></div>
       
   </body>
 </html>
