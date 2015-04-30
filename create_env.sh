@@ -1,0 +1,11 @@
+export nuc2="192.168.1.12"
+export nuc3="192.168.1.13"
+export nuc4="192.168.1.10"
+export nuc5="192.168.1.11"
+export nuc1="192.168.1.16"
+
+alias n1="ssh itg@$nuc1"
+alias n2="ssh itg@$nuc2"
+alias n3="ssh itg@$nuc3"
+alias n4="ssh itg@$nuc4"
+alias n5="ssh itg@$nuc5"

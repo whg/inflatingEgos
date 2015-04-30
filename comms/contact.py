@@ -3,12 +3,12 @@ from __future__ import print_function
 import serial
 import sys
 import threading
-import time
+from time import sleep
 
 from pythonosc import dispatcher
 from pythonosc.osc_server import ForkingOSCUDPServer, ThreadingOSCUDPServer
 
-us = True
+us = False
 
 candidate_numbers = {
     'farage': 0,

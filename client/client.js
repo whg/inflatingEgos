@@ -59,7 +59,7 @@ function insert_tweet(arg) {
     $("#main .twitter-container:gt(" + NUMBER_LIMIT + ")").remove();
 
     $("#main .twitter-container").each(function(i, e) {
-        var v = i * 0.15;
+        var v = i * 0.1;
         var r = candidate_data.colour.r;
         var g = candidate_data.colour.g;
         var b = candidate_data.colour.b;
@@ -85,31 +85,42 @@ function favourites_and_retweets(arg) {
         t.find(".status-container .retweets").text(arg.retweets);
         t.find(".status-container .favourites").text(arg.favourites);
     }
-    else if (arg.amount) {
-        t.find(".status-container").toggleClass("hide");
-        t.find(".status-container .amount").text(arg.amount);
-        t.find(".status-container .retweet-img").hide();
-        t.find(".status-container .favourite-img").hide();
-    }
-    
-    
-    $("#main").animate({"opacity": 0 }, 2000, function() {
-        $("#main").toggle(false);
-        t.animate({"opacity": 1}, 2000, function() {
-            t.css({ "position": "relative" });
+    // else if (arg.amount) {
+    //     t.find(".status-container").toggleClass("hide");
+    //     t.find(".status-container .amount").text(arg.amount);
+    //     t.find(".status-container .retweet-img").hide();
+    //     t.find(".status-container .favourite-img").hide();
+    // }
+
+    t.animate({"opacity": 1}, {
+        duration: 2000,
+        queue: false,
+    });
+
+
+    // t =  t.find(".status-container .retweet-img");
+    $("#main").animate({"opacity": 0}, {
+        duration: 2000,
+        queue: false,
+        done: function() {
+            $("#main").toggle(false);
+
+         t.css({ "position": "relative" });
             var that = this;
             setTimeout(function() {
                 console.log(t);
                 console.log("animating " );
-                $(t).animate({ "top": -2000 }, 2000, function() {
+                $(t).animate({ "top": -2000 }, 4000, function() {
                     $("#status").html("");
                     $("#main").toggle(true);
                     $("#main").animate({ "opacity": 1 }, 1000, function() {
                     });
                 }); 
-            }, 3000);
-        });
+            }, 2000);
+        
+       } 
     });
+
     
 }
 

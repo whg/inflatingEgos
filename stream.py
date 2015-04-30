@@ -52,35 +52,21 @@ class InflatedEgos(StreamListener):
         return self._terms
 
 
-    def on_data(self, jsonstring):
+    def on_data(self, data):
         """This is where all the magic happens"""
-        
-        data = json.loads(jsonstring)
 
-        add_row_mongo(data)
+        if type(data) is str:
+            data = json.loads(data)
+            add_row_mongo(data)
 
         # global osc_client
         # if not osc_client:
         #     # osc_client = udp_client.UDPClient('192.168.0.83', 5005)
         #     osc_client = udp_client.UDPClient('localhost', 5005)
-            
+        # print("asdf")
 
         import re
-        for v in infos.values():
-            r = '|'.join(v['tags'])
-            
-            if re.search(r, data['text'], re.IGNORECASE):
-                candidate = v['short_name']                    
-                mess = tweet_message(data)
 
-                send_message(candidate, mess)
-            
-        # print('sending %s to %s on port %s on %s' % (mess, candidate, v['osc_port'], v['ip']))
-                # try:
-                #     infos[candidate]['client'].send(mess)
-                # except RuntimeError:
-                #     pass
-                # osc_client.send(mess)
 
         rexp = r'#infeg[a-z 1-9\-]+. '
         match = re.findall(rexp, data['text'])
@@ -97,6 +83,25 @@ class InflatedEgos(StreamListener):
                 
             except:
                 logging.info('invalid instruction')
+
+        
+        for v in infos.values():
+            r = '|'.join(v['tags'])
+            
+            if re.search(r, data['text'], re.IGNORECASE):
+                candidate = v['short_name']                    
+                mess = tweet_message(data)
+
+                send_message(candidate, mess)
+            
+        # print('sending %s to %s on port %s on %s' % (mess, candidate, v['osc_port'], v['ip']))
+                # try:
+                #     infos[candidate]['client'].send(mess)
+                # except RuntimeError:
+                #     pass
+                # osc_client.send(mess)
+
+        
             
             
         
@@ -163,11 +168,66 @@ if __name__ == '__main__':
     follows = [e['id_str'] for e in infos.values()]
 
     # poll_candidates(10)
+
+    
     
     terms.extend(other_tags)
     logging.info(terms)
+
+    from pymongo import MongoClient
+    mongo = MongoClient()
+    mongo_col = mongo["egos"]["main"]
+    import time
+    from bson.json_util import dumps
+    
+    def go():
+        i = 0
+        offset = 20
+        for doc in mongo_col.find({}):
+            i+= 1
+            if i < offset:
+                continue
+
+            try:
+                if "#conservatives" in doc['text'].lower():
+                    continue
+
+
+                listener.on_data(doc)
+                time.sleep(0.15)
+            except KeyError:
+                pass
+            # i+= 1
+
+            if i == offset + 18:
+                # doc = mongo_col.find_one({'id_str': "591544172085178368"})
+                # green
+                doc = mongo_col.find_one({'id_str': "591629747945365504"})
+                # snp
+                # doc = mongo_col.find_one({'id_str': "591627649971281920"})
+                # plaid
+                # doc = mongo_col.find_one({'id_str': "591629747945365504"})
+                
+                # message = personal_update(doc, 37, 50)
+                # send_message("cameron", message)
+                print(doc)
+                affect_candidate("bennett", doc, 1)
+
+    ts = threading.Thread(target=go)
+    # ts.start()
+
+    # go()
+    
     try:
+
+        
+        
+        # go()
+        # print('starting stream')
         stream.filter(track=terms, follow=follows)
+
+        
+        
     except KeyboardInterrupt:
         print('closed connection')
     finally:
