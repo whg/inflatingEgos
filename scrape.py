@@ -31,7 +31,6 @@ def data_for_url(candidate):
     retweets = s.xpath('//*[@class="ProfileTweet-action--retweet u-hiddenVisually"]/span/@data-tweet-stat-count')
 
     data = [ids, users, retweets, favourites]
-    # extracted = [d.extract() for d in data]
 
     try :
         assert sum([float(len(e)) for e in data]) / 4 == len(ids)
@@ -42,6 +41,7 @@ def data_for_url(candidate):
             favs = int(favourites)
             
             if user_id != candidate['id_str']:
+                logging.debug('wrong candidate id')
                 continue
             
             query = { 'id_str' : id }
@@ -65,6 +65,15 @@ def data_for_url(candidate):
                 logging.debug('updated %s from %d (added %d) retweets, %d (added %d) favourites' % (id, rets, retdiff, favs, favdiff))
 
                 yield (doc, retdiff, favdiff)
+
+            else: #not in db, so instert a mini one
+                collection.insert_one({
+                    'id_str': id,
+                    'retweet_count': int(rets),
+                    'favorite_count': int(favourites),
+                })
+                logging.debug('inserted mini doc %s' % id)
+                
         
     except AssertionError:
         logging.debug('mismatch in lengths')
