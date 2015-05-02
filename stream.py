@@ -11,6 +11,7 @@ import time
 from datetime import datetime
 from itertools import chain
 from collections import defaultdict
+import re
 
 from twitter_infos import infos, other_tags
 from osc_helpers import *
@@ -65,7 +66,6 @@ class InflatedEgos(StreamListener):
         #     osc_client = udp_client.UDPClient('localhost', 5005)
         # print("asdf")
 
-        import re
 
 
         rexp = r'#infeg[a-z 1-9\-]+. '
