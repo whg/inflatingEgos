@@ -99,9 +99,9 @@ class InflatedEgos(StreamListener):
         if len(cumulative) == 1:
             # i think this is the easiest way to get the item
             for candidate, count in cumulative.items():
-
-                logging.debug("going for affect candidate")
-                oh.affect_candidate(candidate, data, count)
+                if count > 0:
+                    logging.debug("going for affect candidate")
+                    oh.affect_candidate(candidate, data, count)
 
         
         return True
@@ -161,9 +161,9 @@ if __name__ == '__main__':
         if args.polling:
             poll_thread = poll_candidates(10)
         
-        if args.balloon:
-            contact_thread = contact.start_connection()
-            contact.start_balloon_thread()
+        # if args.balloon:
+        #     contact_thread = contact.start_connection()
+            # contact.start_balloon_thread()
         
         stream.filter(track=terms, follow=follows)
 
@@ -172,4 +172,10 @@ if __name__ == '__main__':
         print('closed connection')
     finally:
         # conn.close()
+        if contact_thread:
+            contact_thread.join()
+
+        # if poll_thread:
+        #     poll_thread.join()
+
         pass

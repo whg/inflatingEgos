@@ -6,6 +6,7 @@ import threading
 import queue
 from time import sleep
 import logging
+import pickle
 
 from pythonosc import dispatcher
 from pythonosc.osc_server import ForkingOSCUDPServer, ThreadingOSCUDPServer
@@ -16,7 +17,10 @@ sys.path.append('..')
 from twitter_infos import infos
 import osc_helpers as oh
 
-balloon_queue = queue.Queue()
+logging.basicConfig(level=logging.DEBUG)
+
+
+balloon_queue = None
 
 us = False
 class DummySerial():
@@ -81,14 +85,19 @@ def process_text_input(command):
     
         
 def instruction(ud, candidate, time, osc_msg):
-
+    global balloon_queue
     
     # time = args[1]
-    logging.debug("osc instruction %s with %d" % (candidate, time))
+    logging.debug("queueing osc instruction %s with %d" % (candidate, time))
 
-    balloon_queue.put(BalloonInstruction(candidate, time, osc_msg))
-    
+    # print("queue size = %d" % len(balloon_queue))
 
+    # balloon_queue.append(BalloonInstruction(candidate, time, osc_msg))
+
+    # print("queue size = %d" % len(balloon_queue))
+    # balloon_queue.join()
+
+    process_instruction(BalloonInstruction(candidate, time, osc_msg))
 
 def balloon_size(ud, number, area, circleness):
     logging.debug("got ballon data for %d" % (number))
@@ -132,10 +141,13 @@ def start_connection():
 
 def process_instruction(bi):
 
+    # print("JASDJFSKDJ SFJDFS SDFJ")
+    
     number = candidates[bi.candidate]['number']
     time = bi.amount
     
-    sleep(5)
+    sleep(1)
+    print('ident = %s' % threading.current_thread().ident)
 
     oh.send_message_to_screen(bi.candidate, pickle.loads(bi.osc_msg))
     logging.info("process_instruction(): sent instruction to candidate")
@@ -144,25 +156,43 @@ def process_instruction(bi):
     if time == 0:
         stop(number)
     elif time > 0:
+        logging.debug('inflating %d for %d' % (number, time))
         inflate(number, time)
         sleep(time)
+        logging.debug('done inflating %d' % (number))
     elif time < 0:
-        deflate(number, -time)
+        logging.debug('deflating %d for %d' % (number, time))
+        deflate(number, time)
         sleep(time)
+        logging.debug('done inflating %d' % (number))
 
-    
-
+            
 def balloon_worker():
+    # pass
+    global balloon_queue
     while True:
-        print('waiting for task...')
-        balloon_instruction = balloon_queue.get()
-        process_instruction(balloon_instruction)
-        balloon_queue.task_done()
+        # print('waiting for task...')
+        if len(balloon_queue) > 0:
+        # balloon_instruction = balloon_queue.get()
+            process_instruction(balloon_queue[0])
+            process_queue.pop(0)
+        # balloon_queue.task_done()
+        
         
 def start_balloon_thread():
+
+    global balloon_queue
+    
+    balloon_queue = [] #queue.Queue()
+    print("made balloon queue")
+    
     balloon_thread = threading.Thread(target=balloon_worker)
     balloon_thread.daemon = True
     balloon_thread.start()
+
+
+    # q_manager_thread = QueueChecker(balloon_queue)
+    # q_manager_thread.start()
 
 
     
