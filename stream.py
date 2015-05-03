@@ -93,9 +93,15 @@ class InflatedEgos(StreamListener):
                     logging.debug('found {tag} in {candidate}'.format(**locals()))
                     # logging.debug('%s size = %f' % (candidate, contact.candidates[candidate]['size']))
             # logging.info(data['text'])
-        logging.info(cumulative)
+        logging.debug(cumulative)
 
+        # let's only use this when one candidate is mentioned.
+        if len(cumulative) == 1:
+            # i think this is the easiest way to get the item
+            for candidate, count in cumulative.items():
 
+                logging.debug("going for affect candidate")
+                oh.affect_candidate(candidate, data, count)
 
         
         return True
@@ -110,6 +116,7 @@ class InflatedEgos(StreamListener):
         
 
 def analyse_tweets(candidate, handle, filename, table):
+    """Load tweets from the filename and save to the db with the sentiment analysis"""
     import time
 
     data = json.loads('[' + open(filename).read()[:-2] + ']')
@@ -125,8 +132,9 @@ def analyse_tweets(candidate, handle, filename, table):
 if __name__ == '__main__':
 
     parser = ArgumentParser()
-    parser.add_argument("-p", default=True, help="don't poll for retweets and favorites")
-    parser.add_argument("-b", default=True, help="don't talk to the balloons")
+    parser.add_argument("-p", dest="polling", action="store_false", help="don't poll for retweets and favorites")
+    parser.add_argument("-b", dest="balloon", action="store_false", help="don't talk to the balloons")
+    parser.set_defaults(polling=True, balloon=True)
     args = parser.parse_args()
     
     # conn = sqlite3.connect('egos.db')
@@ -150,9 +158,12 @@ if __name__ == '__main__':
 
 
     try:
-        # poll_thread = poll_candidates(10)
+        if args.polling:
+            poll_thread = poll_candidates(10)
         
-        # contact_thread = contact.start_connection()
+        if args.balloon:
+            contact_thread = contact.start_connection()
+            contact.start_balloon_thread()
         
         stream.filter(track=terms, follow=follows)
 

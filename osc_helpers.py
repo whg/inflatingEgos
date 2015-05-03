@@ -3,7 +3,7 @@ from pythonosc.osc_message_builder import OscMessageBuilder
 import logging
 import json
 import re
-
+import pickle
 from twitter_infos import infos
 
 clients = {}
@@ -17,7 +17,7 @@ def osc_message(d):
     return msg.build()
 
 
-def send_message(candidate, message):
+def send_message_to_screen(candidate, message):
     global clients
     if candidate not in clients:
         v = infos[candidate]
@@ -27,7 +27,10 @@ def send_message(candidate, message):
             
         clients[candidate] = UDPClient(v['ip'], v['osc_port'])
 
-    clients[candidate].send(message)
+    if type(message) == bytes:
+        clients[candidate].send(pickle.loads(message))
+    else:
+        clients[candidate].send(message)
     
     logging.debug('sent message to {0}'.format(candidate))
     
@@ -92,15 +95,17 @@ def affect_candidate(candidate, tweet_data, amount):
     if not balloon_osc:
         balloon_osc = UDPClient('localhost', 5005)
 
+    osc_callback_msg = pickle.dumps(action_update(tweet_data, amount))
 
     msg = OscMessageBuilder("/instruction")
     msg.add_arg(candidate)
     msg.add_arg(amount)
+    msg.add_arg(osc_callback_msg)
     balloon_osc.send(msg.build())
     logging.info("sent instruction %s, %d" % (candidate, amount))
 
-    send_message(candidate, action_update(tweet_data, amount))
-    logging.info("sent instruction to candidate")
+    # send_message_to_screen(candidate, )
+    # logging.info("sent instruction to candidate")
 
 
 
