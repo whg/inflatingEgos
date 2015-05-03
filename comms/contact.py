@@ -17,8 +17,6 @@ sys.path.append('..')
 from twitter_infos import infos
 import osc_helpers as oh
 
-logging.basicConfig(level=logging.DEBUG)
-
 
 balloon_queue = None
 
@@ -97,6 +95,7 @@ def instruction(ud, candidate, time, osc_msg):
     # print("queue size = %d" % len(balloon_queue))
     # balloon_queue.join()
 
+    
     process_instruction(BalloonInstruction(candidate, time, osc_msg))
 
 def balloon_size(ud, number, area, circleness):
@@ -162,8 +161,8 @@ def process_instruction(bi):
         logging.debug('done inflating %d' % (number))
     elif time < 0:
         logging.debug('deflating %d for %d' % (number, time))
-        deflate(number, time)
-        sleep(time)
+        deflate(number, -time) # -time because it's negative if we get here
+        sleep(-time)
         logging.debug('done inflating %d' % (number))
 
             

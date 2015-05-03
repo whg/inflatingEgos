@@ -21,5 +21,12 @@ special_tags = [
     { "sturgeon": "#inflatenicola" },
 ]
 
-swear_words = ["twat", "knob", "dick", "bellend"]
-swear_re = '|'.join(swear_words)
+def filename2words_re(filename):
+    with open(os.path.join(os.path.dirname(__file__), filename)) as f:
+        swear_lines = f.readlines()
+        swear_words = [' ' + line.strip() + ' ' for line in swear_lines]
+    return '|'.join(swear_words)
+        
+
+swear_re = filename2words_re('data/swear_words.txt')
+neg_re = filename2words_re('data/neg_words.txt')

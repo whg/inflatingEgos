@@ -14,11 +14,11 @@ from collections import defaultdict
 from argparse import ArgumentParser
 import re
 
-from twitter_infos import infos, other_tags, swear_re
+from twitter_infos import infos, other_tags, swear_re, neg_re
 import osc_helpers as oh
 from comms import contact
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 consumer_key="CQ8wPwKADz9FheAOui23uYUjW"
@@ -52,9 +52,10 @@ class InflatedEgos(StreamListener):
 
         # print(data)
 
+        tweet = data['text']
 
         rexp = r'#infeg[a-z 1-9\-]+. '
-        instruction_match = re.findall(rexp, data['text'])
+        instruction_match = re.findall(rexp, tweet)
 
         if instruction_match:
             logging.info('found match')
@@ -63,8 +64,9 @@ class InflatedEgos(StreamListener):
                 candidate = vs[1]
                 amount = int(vs[2][:-1])
                 logging.info('affecting candidate')
-                data['text'] = re.sub(rexp, '', data['text'])
-                oh.affect_candidate(candidate, data, amount)
+                tweet = re.sub(rexp, '', tweet)
+                osc_msg = oh.action_update(data, amount)
+                oh.affect_candidate(candidate, osc_msg, amount)
                 
             except Exception as e:
                 logging.info('invalid instruction')
@@ -74,38 +76,34 @@ class InflatedEgos(StreamListener):
         cumulative = defaultdict(int)
         
         for candidate, v in infos.items():
-            # try:
-            #     tagstring = v['tagstring']
-            # except KeyError:
-            #     tagstring = '|'.join(v['tags'].keys())
-            #     v['tagstring'] = tagstring
-                
-            
-            # if re.search(tagstring, data['text'], re.IGNORECASE):
-            #     mess = oh.tweet_message(data)
-            #     oh.send_message_to_screen(candidate, mess)
 
             for tag, weight in v['tags'].items():
-                if re.search(tag, data['text'], re.IGNORECASE):
+                if re.search(tag, tweet, re.IGNORECASE):
                     # oh.send_message(candidate, oh.tweet_message(data))
 
-                    cumulative[candidate]+= weight
-                    logging.debug('found {tag} in {candidate}'.format(**locals()))
-                    # logging.debug('%s size = %f' % (candidate, contact.candidates[candidate]['size']))
-            # logging.info(data['text'])
-        logging.debug(cumulative)
+                    tag_pos = tweet.find(tag)
+                    prev_word = tweet[:tag_pos].split()[-1]
+                    if not re.search(neg_re, prev_word, re.IGNORECASE):
+                        cumulative[candidate]+= weight
+                    
 
-        # let's only use this when one candidate is mentioned.
-        if len(cumulative) == 1:
-            # i think this is the easiest way to get the item
-            for candidate, count in cumulative.items():
-                if count > 0:
-                    logging.debug("going for affect candidate")
-                    oh.affect_candidate(candidate, data, count)
-                else:
-                    if re.search(swear_re, data['text'], re.IGNORECASE):
-                        oh.affect_candidate(candidate, data, -5)
+        for candidate, count in cumulative.items():
+            if count != 0:
+                if not re.search(neg_re, tweet, re.IGNORECASE):
+                    logging.info("going for affect %s" % candidate)
+                    logging.info(tweet)
+
+                    osc_msg = oh.action_update(data, count)
+                    oh.affect_candidate(candidate, osc_msg, count)
+            else:
+                handle_re = [k for k in infos[candidate]['tags'].keys() if '@' in k]
+                if re.search('|'.join(handle_re), tweet, re.IGNORECASE):
+                    if re.search(swear_re, tweet, re.IGNORECASE):
+                        count = -5
+                        osc_msg = oh.action_update(data, count)
+                        oh.affect_candidate(candidate, osc_msg, count)
                         print("BIG SWEAR WORD!!!!!!!!!!!!!")
+                        logging.info(tweet)
 
         
         return True
@@ -176,8 +174,8 @@ if __name__ == '__main__':
         print('closed connection')
     finally:
         # conn.close()
-        if contact_thread:
-            contact_thread.join()
+        # if contact_thread:
+        #     contact_thread.join()
 
         # if poll_thread:
         #     poll_thread.join()

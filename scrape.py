@@ -86,7 +86,7 @@ def all_updates():
             if favs > 10 or rets > 10:
                 try:
                     message = personal_update(tweet_data, favs, rets)
-                    send_message(candidate_data['short_name'], message)
+                    send_message_to_screen(candidate_data['short_name'], message)
                     break
                 except KeyError:
                     """There isn't text in the tweet data..."""
