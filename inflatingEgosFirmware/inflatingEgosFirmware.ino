@@ -13,35 +13,24 @@ public:
     defPin = dp;
     pinMode(infPin, OUTPUT);
     pinMode(defPin, OUTPUT);
-//    icounter = dcounter = 0;
     counter = 0;
   }
     
   void inflate(int time) {
-//    icounter = time;
     counter = time;
     mode = INFLATE;
   }
   
   void deflate(int time) {
-//    dcounter = time;
     counter = time;
     mode = DEFLATE;
   }
   
   void stop() {
-//    dcounter = icounter = 0;
     counter = 0;
   }
     
   void update() {
-    
-//    digitalWrite(infPin, icounter > 0);
-//    digitalWrite(defPin, dcounter > 0);
-//    
-//    if (icounter > 0) icounter--;
-//    if (dcounter > 0) dcounter--;
-//    
     
     digitalWrite(infPin, mode == INFLATE && counter > 0);
     digitalWrite(defPin, mode == DEFLATE && counter > 0);
@@ -55,9 +44,8 @@ public:
 const int NB = 7;
 Balloon balloons[NB];
 
-
 void setup() {
-  // initialize serial:
+
   Serial.begin(9600);
   
   // 2 - 11
@@ -94,26 +82,15 @@ void serialEvent() {
       
       if (command == 'i') {
         balloons[number].inflate(time);
-//        Serial.println("inflating...");
       }
       else if (command == 'd') {
         balloons[number].deflate(time);
-//        Serial.println("deflating...");
       }
       else if (command == 's') {
         balloons[number].stop();
       }
     }            
-    else {
-//      Serial.println("invalid message header and footer");
-    }  
   }
-  
-//  else if (Serial.available() > 5) {
-//    while (Serial.available()) {
-//      Serial.read();
-//    }
-//  }
     
 }
 
