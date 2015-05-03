@@ -71,6 +71,7 @@ def data_for_url(candidate):
                     'id_str': id,
                     'retweet_count': int(rets),
                     'favorite_count': int(favourites),
+                    'text': '',
                 })
                 logging.debug('inserted mini doc %s' % id)
                 
@@ -82,10 +83,14 @@ def data_for_url(candidate):
 def all_updates():
     for candidate_data in infos.values():
         for tweet_data, favs, rets in data_for_url(candidate_data):
-            if favs > 10 or rets > 10:                
-                message = personal_update(tweet_data, favs, rets)
-                send_message(candidate_data['short_name'], message)
-                break
+            if favs > 10 or rets > 10:
+                try:
+                    message = personal_update(tweet_data, favs, rets)
+                    send_message(candidate_data['short_name'], message)
+                    break
+                except KeyError:
+                    """There isn't text in the tweet data..."""
+                    
 
 
 def poll_candidates(t=10):
@@ -95,8 +100,10 @@ def poll_candidates(t=10):
             time.sleep(t)
             
     thread = threading.Thread(target=cb)
+    thread.daemon = True
     thread.start()
     logging.info('started poll_candidates thread')
+    return thread
         
 if __name__ == "__main__":
    
