@@ -102,3 +102,6 @@ def affect_candidate(candidate, tweet_data, amount):
     send_message(candidate, action_update(tweet_data, amount))
     logging.info("sent instruction to candidate")
 
+
+
+    

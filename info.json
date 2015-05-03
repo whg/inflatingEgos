@@ -7,13 +7,16 @@
         "id_str":"15010349",
         "ws_port":9002,
         "ip": "192.168.1.16",
-        "tags":[
-            "@Nick_Clegg",
-            "@LibDems",
-            "#libdems",
-            "#VoteLibDem",
-            "#LibDemManifesto"
-        ],
+        "tags": {
+            "@Nick_Clegg": 0,
+            "@LibDems": 0,
+            "#libdems": 0,
+            "#VoteLibDem": 1,
+            "#LibDemManifesto": 0,
+            "#LibDemsTeam2015": 1
+        },
+        "min_inflation": 10,
+        "max_inflation": 2000,
         "colour": { "r": 255, "g": 97, "b": 0 }
     },
     "bennett":{
@@ -24,36 +27,40 @@
         "id_str":"16596200",
         "ws_port":9006,
         "ip": "192.168.1.12",
-        "tags":[
-            "@natalieben",
-            "@TheGreenParty",
-            "#greens",
-            "#VoteGreen",
-            "#GreenManifesto",
-            "#ForTheCommonGood",
-            "#GreenSurge",
-            "#VoteGreen2015",
-            "#ChangeTheTune"
-        ],
+        "tags": {
+            "@natalieben": 0,
+            "@TheGreenParty": 0,
+            "#greens": 0,
+            "#VoteGreen": 1,
+            "#GreenManifesto": 0,
+            "#ForTheCommonGood": 1,
+            "#GreenSurge": 2,
+            "#VoteGreen2015": 1,
+            "#ChangeTheTune": 2
+        },
+        "min_inflation": 10,
+        "max_inflation": 2000,
         "colour": { "r": 25, "g": 173, "b": 71 }
     },
     "cameron":{
         "name":"David Cameron",
-        "tags":[
-            "@David_Cameron",
-            "@conservatives",
-            "#conservatives",
-            "#CameronMustGo",
-            "#TeamCameron",
-            "#VoteConservative",
-            "#ConservativeManifesto"
-        ],
+        "tags": {
+            "@David_Cameron": 0,
+            "@conservatives": 0,
+            "#conservatives": 0,
+            "#CameronMustGo": -1,
+            "#TeamCameron": 1,
+            "#VoteConservative": 1,
+            "#ConservativeManifesto": 0
+        },
         "url":"https://twitter.com/David_Cameron",
         "osc_port":8001,
         "id_str":"103065157",
         "ws_port":9001,
         "short_name":"cameron",
         "ip": "192.168.1.16",
+        "min_inflation": 10,
+        "max_inflation": 2000,
         "colour": { "r": 40, "g": 40, "b": 130 }
     },
     "wood":{
@@ -64,13 +71,15 @@
         "id_str":"14450739",
         "ws_port":9005,
         "ip": "192.168.1.12",
-        "tags":[
-            "@LeanneWood",
-            "@Plaid_Cymru",
-            "#plaid15",
-            "#VotePlaid",
-            "#PlaidManifesto"
-        ],
+        "tags": {
+            "@LeanneWood": 0,
+            "@Plaid_Cymru": 0,
+            "#plaid15": 1,
+            "#VotePlaid": 1,
+            "#PlaidManifesto": 0
+        },
+        "min_inflation": 10,
+        "max_inflation": 2000,
         "colour": { "r": 12, "g": 61, "b": 8 }
     },
     "farage":{
@@ -81,14 +90,17 @@
         "id_str":"19017675",
         "ws_port":9007,
         "ip": "192.168.1.11",
-        "tags":[
-            "@Nigel_Farage",
-            "@UKIP",
-            "#ukip",
-            "#BelieveInBritain",
-            "#VoteUKIP",
-            "#UKIPManifesto"
-        ],
+        "tags": {
+            "@Nigel_Farage": 0,
+            "@UKIP": 0,
+            "#ukip": 0,
+            "#BelieveInBritain": 1,
+            "#VoteUKIP": 1,
+            "#UKIPManifesto": 0,
+            "#teamNigel": 2
+        },
+        "min_inflation": 10,
+        "max_inflation": 2000,
         "colour": { "r": 58, "g": 7, "b": 84 }
     },
     "miliband":{
@@ -99,14 +111,16 @@
         "id_str":"61781260",
         "ws_port":9003,
         "ip": "192.168.1.13",
-        "tags":[
-            "@Ed_Miliband",
-            "@UKLabour",
-            "#labour",
-            "#VoteLabour",
-            "#LabourManifesto",
-            "#milifandom"
-        ],
+        "tags": {
+            "@Ed_Miliband": 0,
+            "@UKLabour": 0,
+            "#labour": 0,
+            "#VoteLabour": 1,
+            "#LabourManifesto": 0,
+            "#milifandom": 2
+        },
+        "min_inflation": 10,
+        "max_inflation": 2000,
         "colour": { "r": 207, "g": 17, "b": 52 }
     },
     "sturgeon":{
@@ -117,15 +131,17 @@
         "id_str":"160952087",
         "ws_port":9004,
         "ip": "192.168.1.13",
-        "tags":[
-            "@NicolaSturgeon",
-            "@theSNP",
-            "#snp",
-            "#VoteSNP",
-            "#SNPManifesto",
-            "#SexySocialism",
-            "#VoteSNPGetSexy"
-        ],
+        "tags": {
+            "@NicolaSturgeon": 0,
+            "@theSNP": 0,
+            "#snp": 0,
+            "#VoteSNP": 1,
+            "#SNPManifesto": 0,
+            "#SexySocialism": 2,
+            "#VoteSNPGetSexy": 2
+        },
+        "min_inflation": 10,
+        "max_inflation": 2000,
         "colour": { "r": 240, "g": 240, "b": 0 }
     }
 }

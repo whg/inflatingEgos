@@ -4,32 +4,37 @@ import serial
 import sys
 import threading
 from time import sleep
+import logging
 
 from pythonosc import dispatcher
 from pythonosc.osc_server import ForkingOSCUDPServer, ThreadingOSCUDPServer
 
-us = False
+import sys
+sys.path.append('..')
 
-candidate_numbers = {
-    'farage': 0,
-    'cameron': 1,
-    'clegg': 2,
-    'miliband': 3,
-    'wood': 4,
-    'sturgeon': 5,
-    'bennett': 6,
+from twitter_infos import infos
+
+us = False
+class DummySerial():
+    def close(self):
+        pass
+    def write(self, w):
+        pass
+
+
+candidates = {
+    'farage': {
+        'number': 0,
+        'size': 0
+    },
+    'cameron': { 'number': 5, 'size': 0 },
+    'clegg': { 'number': 2, 'size': 0 },
+    'miliband': { 'number': 3, 'size': 0 },
+    'wood': { 'number': 4, 'size': 0 },
+    'sturgeon': { 'number': 1, 'size': 0 },
+    'bennett': { 'number': 6, 'size': 0 },
 }
 
-if us:
-    se = serial.Serial('/dev/tty.usbserial-A403999Z')
-else:
-    class DummySerial():
-        def close(self):
-            pass
-        def write(self, w):
-            pass
-
-    se = DummySerial()
 
 def gc(c, n, t=0):
     s = '?%s%s%s!' % (c, chr(n), chr(t))
@@ -67,10 +72,10 @@ def process(command):
         
 def instruction(ud, candidate, time):
 
-    number = candidate_numbers[candidate]
+    number = candidates[candidate]['number']
     # time = args[1]
 
-    time.sleep(5)
+    sleep(5)
     
     if time == 0:
         stop(number)
@@ -79,19 +84,50 @@ def instruction(ud, candidate, time):
     elif time < 0:
         deflate(number, -time)
 
-    print("------ instruction %s with %d" % (number, time))
+    logging.debug("instruction %s with %d" % (number, time))
+
+
+def balloon_size(ud, number, area, circleness):
+    logging.debug("got ballon data for %d" % (number))
+    
+    for candidate, value in candidates.items():
+        if value['number'] == number:
+            # if circleness > 0.8:
+            candidates['size'] = area
+            logging.debug("set size for %s to %f" % (candidate, area))
+
+            # stop a balloon staying on deflate for too long
+            if area < infos[candiate]['min_inflation']:
+                stop(number)
+                
+            return
+
+
+def start_connection():
+
+    global se
+    if us:
+        se = serial.Serial('/dev/tty.usbserial-A403999Z')
+    else:
+        se = DummySerial()
+
+    
+    dispatch = dispatcher.Dispatcher()
+    dispatch.map("/instruction", instruction)
+    dispatch.map("/balloon", balloon_size)
+    
+    port = 5005
+    osc_server = ForkingOSCUDPServer(('0.0.0.0', port), dispatch)
+    server_thread = threading.Thread(target=osc_server.serve_forever)
+    server_thread.daemon = True
+    server_thread.start()
+    print('started osc server on port %s' % port)
+    return server_thread
 
 if __name__ == "__main__":
     try:
 
-        dispatch = dispatcher.Dispatcher()
-        dispatch.map("/instruction", instruction)
-
-        port = 5005
-        osc_server = ForkingOSCUDPServer(('localhost', port), dispatch)
-        server_thread = threading.Thread(target=osc_server.serve_forever)
-        server_thread.start()
-        print('started osc server on port %s' % port)
+        start_connection()
 
         while True:
             # input()
@@ -105,3 +141,5 @@ if __name__ == "__main__":
     
     finally:
         se.close()
+
+

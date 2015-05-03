@@ -7,14 +7,16 @@ import json
 import os
 infos = json.load(open(os.path.join(os.path.dirname(__file__), 'info.json')))
 
-
 other_tags = [
     "#infeg",
-    "#inflatenigel",
-    "#inflatedavid",
-    "#inflateed",
-    "#inflatenick",
-    "#inflateleanne",
-    "#inflatenatalie",
-    "#inflatenicola",
+]
+
+special_tags = [
+    { "farage": "#inflatenigel" },
+    { "cameron": "#inflatedavid" },
+    { "miliband": "#inflateed" },
+    { "clegg": "#inflatenick" },
+    { "wood": "#inflateleanne" },
+    { "bennett": "#inflatenatalie" },
+    { "sturgeon": "#inflatenicola" },
 ]
