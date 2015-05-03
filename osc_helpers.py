@@ -41,7 +41,7 @@ def assign_user(d, user):
 
 
 def tweet_arg(data):
-    tweet = re.sub(r'(http|https)://[a-zA-Z0-9./…]+(?:\s+|$)', '', data['text'])
+    tweet = re.sub(r'(http|https)://[a-zA-Z0-9./…]+(?:\s|$)', '', data['text'])
     
     arg = { 'tweet': tweet }
     

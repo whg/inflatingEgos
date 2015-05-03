@@ -1,6 +1,6 @@
-export nuc2="192.168.1.12"
-export nuc3="192.168.1.13"
-export nuc4="192.168.1.10"
+export nuc2="192.168.1.28"
+export nuc3="192.168.1.27"
+export nuc4="192.168.1.26"
 export nuc5="192.168.1.11"
 export nuc1="192.168.1.16"
 

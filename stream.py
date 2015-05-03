@@ -32,8 +32,25 @@ from sentiment import get_sentiment, get_sentiment2
 from saving import *
 from scrape import poll_candidates
 
-osc_client = None
+last_update = {}
 
+def do_affect(candidate, data, count):
+    space = 15
+    
+    now = datetime.now()
+
+    try:
+        delta = (now - last_update[candidate]).seconds
+    except KeyError:
+        delta = space +1
+        
+    if delta > space:
+        osc_msg = oh.action_update(data, count)
+        oh.affect_candidate(candidate, osc_msg, count)
+        last_update[candidate] = now
+    else:
+        logging.info('not enough space between')
+        
 class InflatedEgos(StreamListener):
 
     def __init__(self, *args):
@@ -50,10 +67,15 @@ class InflatedEgos(StreamListener):
             data = json.loads(data)
             add_row_mongo(data)
 
-        # print(data)
 
+        if 'text' not in data:
+            return
+            
         tweet = data['text']
 
+        ###################################################
+        ## twitter instructions using #infeg
+        
         rexp = r'#infeg[a-z 1-9\-]+. '
         instruction_match = re.findall(rexp, tweet)
 
@@ -72,36 +94,69 @@ class InflatedEgos(StreamListener):
                 logging.info('invalid instruction')
                 print(e)
 
-            
+
+        
+
+        ######################################################
+        ## find the tags that mean something
+        
         cumulative = defaultdict(int)
         
         for candidate, v in infos.items():
+
+            try:
+                tagstring = v['tagstring']
+            except KeyError:
+                tagstring = '|'.join(v['tags'].keys())
+                v['tagstring'] = tagstring
+
+
+            if re.search(tagstring, data['text'], re.IGNORECASE):
+                mess = oh.tweet_message(data)
+                oh.send_message_to_screen(candidate, mess)
+            
 
             for tag, weight in v['tags'].items():
                 if re.search(tag, tweet, re.IGNORECASE):
                     # oh.send_message(candidate, oh.tweet_message(data))
 
-                    tag_pos = tweet.find(tag)
-                    prev_word = tweet[:tag_pos].split()[-1]
-                    if not re.search(neg_re, prev_word, re.IGNORECASE):
-                        cumulative[candidate]+= weight
-                    
 
+                    tag_pos = tweet.find(tag)
+                    if tag_pos == 0:
+                        continue
+                        
+                    prev_word = tweet[:tag_pos].split()[-1]
+                    if re.search(neg_re, prev_word, re.IGNORECASE):
+                        continue
+                        
+                    cumulative[candidate]+= weight
+                    
+        ######################################################
+        ## dispatch the tweets accordingly
+        ## if 
+
+        
         for candidate, count in cumulative.items():
             if count != 0:
-                if not re.search(neg_re, tweet, re.IGNORECASE):
-                    logging.info("going for affect %s" % candidate)
-                    logging.info(tweet)
+                # # make sure the tag isn't negated
+                # if not re.search(neg_re, tweet, re.IGNORECASE):
+                #     logging.info("going for affect %s" % candidate)
+                #     logging.info(tweet)
 
-                    osc_msg = oh.action_update(data, count)
-                    oh.affect_candidate(candidate, osc_msg, count)
+                logging.info(tweet)
+                do_affect(candidate, data, count)
+                # osc_msg = oh.action_update(data, count)
+                # oh.affect_candidate(candidate, osc_msg, count)
             else:
                 handle_re = [k for k in infos[candidate]['tags'].keys() if '@' in k]
+                # only do for handles
                 if re.search('|'.join(handle_re), tweet, re.IGNORECASE):
+                    # let's have a swear word
                     if re.search(swear_re, tweet, re.IGNORECASE):
                         count = -5
-                        osc_msg = oh.action_update(data, count)
-                        oh.affect_candidate(candidate, osc_msg, count)
+                        do_affect(candidate, data, count)
+                        # osc_msg = oh.action_update(data, count)
+                        # oh.affect_candidate(candidate, osc_msg, count)
                         print("BIG SWEAR WORD!!!!!!!!!!!!!")
                         logging.info(tweet)
 
@@ -136,7 +191,8 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument("-p", dest="polling", action="store_false", help="don't poll for retweets and favorites")
     parser.add_argument("-b", dest="balloon", action="store_false", help="don't talk to the balloons")
-    parser.set_defaults(polling=True, balloon=True)
+    parser.add_argument("-e", dest="emulate", action="store_true", help="emulate from database")
+    parser.set_defaults(polling=True, balloon=True, emulate=False)
     args = parser.parse_args()
     
     # conn = sqlite3.connect('egos.db')
@@ -160,14 +216,22 @@ if __name__ == '__main__':
 
 
     try:
-        if args.polling:
-            poll_thread = poll_candidates(10)
+        if args.emulate:
+            from pymongo import MongoClient
+            mongo = MongoClient()
+            mongo_col = mongo["egos"]["main"]
+            for doc in mongo_col.find({}):
+                listener.on_data(doc)
+                time.sleep(0.2)
+            
+        else:
+            if args.polling:
+                poll_thread = poll_candidates(10)
         
         # if args.balloon:
         #     contact_thread = contact.start_connection()
             # contact.start_balloon_thread()
-        
-        stream.filter(track=terms, follow=follows)
+            stream.filter(track=terms, follow=follows)
 
         
     except KeyboardInterrupt:

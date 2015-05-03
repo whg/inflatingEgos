@@ -7,6 +7,7 @@ import queue
 from time import sleep
 import logging
 import pickle
+from collections import defaultdict
 
 from pythonosc import dispatcher
 from pythonosc.osc_server import ForkingOSCUDPServer, ThreadingOSCUDPServer
@@ -36,17 +37,18 @@ class BalloonInstruction(object):
         
 candidates = {
     'farage': {
-        'number': 0,
+        'number': 6,
         'size': 0
     },
     'cameron': { 'number': 5, 'size': 0 },
-    'clegg': { 'number': 2, 'size': 0 },
-    'miliband': { 'number': 3, 'size': 0 },
-    'wood': { 'number': 4, 'size': 0 },
+    'clegg': { 'number': 3, 'size': 0 },
+    'miliband': { 'number': 2, 'size': 0 },
+    'wood': { 'number': 43, 'size': 0 },
     'sturgeon': { 'number': 1, 'size': 0 },
-    'bennett': { 'number': 6, 'size': 0 },
+    'bennett': { 'number': 0, 'size': 0 },
 }
 
+statuses = defaultdict(bool)
 
 def gc(c, n, t=0):
     s = '?%s%s%s!' % (c, chr(n), chr(t))
@@ -54,12 +56,15 @@ def gc(c, n, t=0):
     
 def inflate(number, time=1):
     se.write(gc('i', number, time))
+    statuses[number] = True
 
 def deflate(number, time=1):
     se.write(gc('d', number, time))
+    statuses[number] = True
 
 def stop(number):
     se.write(gc('s', number))
+    statuses[number] = False
     
 def process_text_input(command):
     tokens = command.split()
@@ -144,7 +149,7 @@ def process_instruction(bi):
     
     number = candidates[bi.candidate]['number']
     time = bi.amount
-    
+
     sleep(1)
     print('ident = %s' % threading.current_thread().ident)
 
@@ -158,11 +163,13 @@ def process_instruction(bi):
         logging.debug('inflating %d for %d' % (number, time))
         inflate(number, time)
         sleep(time)
+        stop(number) # just for good measure
         logging.debug('done inflating %d' % (number))
     elif time < 0:
         logging.debug('deflating %d for %d' % (number, time))
         deflate(number, -time) # -time because it's negative if we get here
         sleep(-time)
+        stop(number) # just for good measure
         logging.debug('done inflating %d' % (number))
 
             
