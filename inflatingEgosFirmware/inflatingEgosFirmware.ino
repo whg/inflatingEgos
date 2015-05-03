@@ -43,6 +43,7 @@ public:
 // 2 onwards 13
 const int NB = 7;
 Balloon balloons[NB];
+const int TIME_STEP = 100;
 
 void setup() {
 
@@ -62,7 +63,7 @@ void loop() {
   for (int i = 0; i < NB; i++) {
     balloons[i].update();
   }
-  delay(1000);
+  delay(TIME_STEP);
 }
 
 void serialEvent() {
@@ -76,7 +77,6 @@ void serialEvent() {
       unsigned char time = (unsigned char) buf[3];
       
       if (number > NB) {
-        Serial.println("over NB");
         return;
       }
       
