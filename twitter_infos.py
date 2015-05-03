@@ -20,3 +20,6 @@ special_tags = [
     { "bennett": "#inflatenatalie" },
     { "sturgeon": "#inflatenicola" },
 ]
+
+swear_words = ["twat", "knob", "dick", "bellend"]
+swear_re = '|'.join(swear_words)

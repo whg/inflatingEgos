@@ -14,7 +14,7 @@ from collections import defaultdict
 from argparse import ArgumentParser
 import re
 
-from twitter_infos import infos, other_tags
+from twitter_infos import infos, other_tags, swear_re
 import osc_helpers as oh
 from comms import contact
 
@@ -102,6 +102,10 @@ class InflatedEgos(StreamListener):
                 if count > 0:
                     logging.debug("going for affect candidate")
                     oh.affect_candidate(candidate, data, count)
+                else:
+                    if re.search(swear_re, data['text'], re.IGNORECASE):
+                        oh.affect_candidate(candidate, data, -5)
+                        print("BIG SWEAR WORD!!!!!!!!!!!!!")
 
         
         return True
