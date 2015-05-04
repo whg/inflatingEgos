@@ -14,7 +14,7 @@ from collections import defaultdict
 from argparse import ArgumentParser
 import re
 
-from twitter_infos import infos, other_tags, swear_re, neg_re
+from twitter_infos import infos, other_tags, swear_re, neg_re, special_tags
 import osc_helpers as oh
 from comms import contact
 
@@ -98,7 +98,12 @@ class InflatedEgos(StreamListener):
                 raise e
 
 
-        
+        ######################################################
+        ## special tags
+
+        for candidate, tag in special_tags:
+            if tag in tweet:
+                do_affect(candidate, data, 5)
 
         ######################################################
         ## find the tags that mean something
