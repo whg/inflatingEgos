@@ -8,6 +8,7 @@ from time import sleep
 import logging
 import pickle
 from collections import defaultdict
+import sqlite3 as lite
 
 from pythonosc import dispatcher
 from pythonosc.osc_server import ForkingOSCUDPServer, ThreadingOSCUDPServer
@@ -18,9 +19,14 @@ sys.path.append('..')
 from twitter_infos import infos
 import osc_helpers as oh
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
+
+import queue
+lock = threading.Lock()
+callback_queue = queue.Queue()
 
 balloon_queue = None
+db_con = None
 
 us = True
 class DummySerial():
@@ -39,14 +45,15 @@ class BalloonInstruction(object):
 candidates = {
     'farage': {
         'number': 6,
-        'size': 0
+        'size': 0,
+        'wanted': 0.14
     },
-    'cameron': { 'number': 5, 'size': 0 },
-    'clegg': { 'number': 4, 'size': 0 },
-    'miliband': { 'number': 3, 'size': 0 },
-    'wood': { 'number': 43, 'size': 0 },
-    'sturgeon': { 'number': 2, 'size': 0 },
-    'bennett': { 'number': 1, 'size': 0 },
+    'cameron': { 'number': 5, 'size': 0, 'wanted': 0.33 },
+    'clegg': { 'number': 4, 'size': 0, 'wanted': 0.08 },
+    'miliband': { 'number': 3, 'size': 0, 'wanted': 0.33 },
+    'wood': { 'number': 43, 'size': 0, 'wanted': 0.0 },
+    'sturgeon': { 'number': 2, 'size': 0, 'wanted': 0.06 },
+    'bennett': { 'number': 1, 'size': 0, 'wanted': 0.06 },
 }
 
 statuses = defaultdict(bool)
@@ -104,34 +111,51 @@ def instruction(ud, candidate, time, osc_msg):
     
     process_instruction(BalloonInstruction(candidate, time, osc_msg))
 
-def balloon_size(ud, number, area, circleness):
-    
-    global candidates
 
-    print(candidates)
+def balloon_size2(number, area, circleness):
+
+    global candidates
+    global db_con
 
     c = None
     for candidate, value in candidates.items():
         if value['number'] == number:
-            # if circleness > 0.8:
             c = candidate
             break
 
-    if c:
-        candidate = c
-        print(area)
-        print('before %s' % candidates[candidate]['size'])
-        candidates[candidate]['size'] = area
-        print('after %s' % candidates[candidate]['size'])
+    try:
+        if c:
+            cur = db_con.cursor()
+            cur.execute('UPDATE sizes SET size=? WHERE name=?', (area, candidate))
+            db_con.commit()
+            logging.debug("set size for %s (%d) to %f" % (candidate, number, area))
 
-        logging.debug("set size for %s (%d) to %f" % (candidate, number, area))
-            
-        # stop a balloon staying on deflate for too long
-        if area < infos[candidate]['min_inflation']:
-            stop(number)
-                
+        else:
+            print('cant find candidate')
+    except lite.DatabaseError:
+        pass
 
+def balloon_size(ud, number, area, circleness):
+    
+    # print('bs')
+    balloon_size2(number, area, circleness)
+    return
+
+    global candidates
+
+    global db_con
+    global lock
     print(candidates)
+
+    for candidate, value in candidates.items():
+        if value['number'] == number:
+            # if circleness > 0.8:
+            c = candidate
+            print('c = %s, s = %d' % (candidate, area))
+            candidates[candidate]['size'] = area
+            return
+
+
 
 def start_connection():
 
@@ -142,34 +166,75 @@ def start_connection():
         se = DummySerial()
 
     
+    global db_con
+    db_con = lite.connect('sizes.db')
+
+    
     dispatch = dispatcher.Dispatcher()
     dispatch.map("/instruction", instruction)
     dispatch.map("/balloon", balloon_size)
+    dispatch.map("/adjust", adjust_balloons)
     
     port = 5005
     osc_server = ForkingOSCUDPServer(('0.0.0.0', port), dispatch)
-    server_thread = threading.Thread(target=osc_server.serve_forever)
-    server_thread.daemon = True
-    server_thread.start()
+    # server_thread = threading.Thread(target=osc_server.serve_forever)
+    # server_thread.daemon = True
+    # server_thread.start()
     print('started osc server on port %s' % port)
+    osc_server.serve_forever()
     
-    return server_thread
 
+def size_for_candidate(candidate):
+    global db_con
+    try:
+        cur = db_con.cursor()
+        logging.info('candidate = %s' % candidate)
+        # cur.execute('SELECT size from sizes WHERE name=?', (candidate,))
+        cur.execute("select size from sizes where name='%s'" % candidate)
+        row = cur.fetchone()
+        return row[0]
+    except:
+        return -1
 
+def adjust_balloons(ud):
+    global candidates
+    logging.info('adjusting')
+    # print(candidates)
+    for candidate, v in candidates.items():
+        size = size_for_candidate(candidate)
+        logging.info('adjusting %s' % candidate)
+        if size < 0:
+            continue
+        number = v['number']
+        time = 25
+        if size < 20000 * v['wanted']:
+            logging.debug('inflating %d for %d' % (number, time))
+            inflate(number, time)
+            sleep(time * 0.1)
+            stop(number) # just for good measure
+            logging.debug('done inflating %d' % (number))
+        else:
+            logging.debug('deflating %d for %d' % (number, time))
+            deflate(number, time) # -time because it's negative if we get here
+            sleep(time * 0.1)
+            stop(number) # just for good measure
+            logging.debug('done inflating %d' % (number))
 
 def process_instruction(bi):
-
-    # print("JASDJFSKDJ SFJDFS SDFJ")
     
     global candidates
     number = candidates[bi.candidate]['number']
-    time = bi.amount
+    time = bi.amount * 10
 
     oh.send_message_to_screen(bi.candidate, pickle.loads(bi.osc_msg))
     logging.info("process_instruction(): sent instruction to candidate")
 
-    return
-    
+    size = size_for_candidate(bi.candidate)
+    if size < 0:
+        return
+
+    if size > 19000:
+        return
     sleep(5)
     print('ident = %s' % threading.current_thread().ident)
 
@@ -180,46 +245,17 @@ def process_instruction(bi):
     elif time > 0:
         logging.debug('inflating %d for %d' % (number, time))
         inflate(number, time)
-        sleep(time)
+        sleep(time * 0.1)
         stop(number) # just for good measure
         logging.debug('done inflating %d' % (number))
     elif time < 0:
         logging.debug('deflating %d for %d' % (number, time))
         deflate(number, -time) # -time because it's negative if we get here
-        sleep(-time)
+        sleep(-time * 0.1)
         stop(number) # just for good measure
         logging.debug('done inflating %d' % (number))
 
-            
-def balloon_worker():
-    # pass
-    global balloon_queue
-    while True:
-        # print('waiting for task...')
-        if len(balloon_queue) > 0:
-        # balloon_instruction = balloon_queue.get()
-            process_instruction(balloon_queue[0])
-            process_queue.pop(0)
-        # balloon_queue.task_done()
-        
-        
-def start_balloon_thread():
-
-    global balloon_queue
-    
-    balloon_queue = [] #queue.Queue()
-    print("made balloon queue")
-    
-    balloon_thread = threading.Thread(target=balloon_worker)
-    balloon_thread.daemon = True
-    balloon_thread.start()
-
-
-    # q_manager_thread = QueueChecker(balloon_queue)
-    # q_manager_thread.start()
-
-
-    
+                
 if __name__ == "__main__":
 
     # start_connection()
