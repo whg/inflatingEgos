@@ -12,14 +12,17 @@ other_tags = [
 ]
 
 special_tags = [
-    { "farage": "#inflatenigel" },
-    { "cameron": "#inflatedavid" },
-    { "miliband": "#inflateed" },
-    { "clegg": "#inflatenick" },
-    { "wood": "#inflateleanne" },
-    { "bennett": "#inflatenatalie" },
-    { "sturgeon": "#inflatenicola" },
+    ( "farage", "#inflatenigel" ),
+    ( "cameron", "#inflatedavid" ),
+    ( "miliband" "#inflateed" ),
+    ( "clegg", "#inflatenick" ),
+    ( "wood", "#inflateleanne" ),
+    ( "bennett", "#inflatenatalie" ),
+    ( "sturgeon", "#inflatenicola" ),
 ]
+
+# for p in special_tags:
+#     other_tags.append(p[1])
 
 def filename2words_re(filename):
     with open(os.path.join(os.path.dirname(__file__), filename)) as f:

@@ -20,7 +20,7 @@ def data_for_url(candidate):
     
     if not collection:
          mongo = MongoClient()
-         collection = mongo["egos"]["main"]
+         collection = mongo["egos"]["main2"]
     
     response = requests.get(candidate['url'])
     s = html.fromstring(response.text)
@@ -67,11 +67,11 @@ def data_for_url(candidate):
                 yield (doc, retdiff, favdiff)
 
             else: #not in db, so instert a mini one
-                collection.insert_one({
+                collection.insert({
                     'id_str': id,
                     'retweet_count': int(rets),
                     'favorite_count': int(favourites),
-                    'text': '',
+                    'text': ' ',
                 })
                 logging.debug('inserted mini doc %s' % id)
                 

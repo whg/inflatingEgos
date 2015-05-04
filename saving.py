@@ -31,7 +31,7 @@ def add_row_mongo(data):
     if not mongo_col:
         from pymongo import MongoClient
         mongo = MongoClient()
-        mongo_col = mongo["egos"]["main"]
+        mongo_col = mongo["egos"]["main2"]
 
     mongo_col.insert(data)
     logging.debug('inserted %s into mongo' % data['id'])

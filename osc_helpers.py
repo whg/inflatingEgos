@@ -93,7 +93,7 @@ balloon_osc = None
 def affect_candidate(candidate, osc_msg, amount):
     global balloon_osc
     if not balloon_osc:
-        balloon_osc = UDPClient('localhost', 5005)
+        balloon_osc = UDPClient('0.0.0.0', 5005)
 
     osc_callback_msg = pickle.dumps(osc_msg)
 

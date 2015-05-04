@@ -43,9 +43,10 @@ def do_affect(candidate, data, count):
         delta = (now - last_update[candidate]).seconds
     except KeyError:
         from random import randint
-        delta = space + randint(0, space)
+        delta = space +1
         
     if delta > space:
+        logging.info('sending affect to %s' % candidate)
         osc_msg = oh.action_update(data, count)
         oh.affect_candidate(candidate, osc_msg, count)
         last_update[candidate] = now
@@ -66,7 +67,7 @@ class InflatedEgos(StreamListener):
         # so don't re-add 
         if type(data) is str:
             data = json.loads(data)
-            add_row_mongo(data)
+            # add_row_mongo(data)
 
 
         if 'text' not in data:
@@ -77,13 +78,14 @@ class InflatedEgos(StreamListener):
         ###################################################
         ## twitter instructions using #infeg
         
-        rexp = r'#infeg[a-z 1-9\-]+. '
+        rexp = r'#infeg[a-z 0-9\-]+. '
         instruction_match = re.findall(rexp, tweet)
 
         if instruction_match:
             logging.info('found match')
             try:
                 vs = instruction_match[0].split()
+                logging.info('asdf %s' % vs)
                 candidate = vs[1]
                 amount = int(vs[2][:-1])
                 logging.info('affecting candidate')
@@ -93,7 +95,7 @@ class InflatedEgos(StreamListener):
                 
             except Exception as e:
                 logging.info('invalid instruction')
-                print(e)
+                raise e
 
 
         
@@ -122,20 +124,20 @@ class InflatedEgos(StreamListener):
                     # oh.send_message(candidate, oh.tweet_message(data))
 
 
-                    tag_pos = tweet.find(tag)
-                    if tag_pos == 0:
-                        continue
+                    # tag_pos = tweet.find(tag)
+                    # if tag_pos == 0:
+                    #     continue
                         
-                    prev_word = tweet[:tag_pos].split()[-1]
-                    if re.search(neg_re, prev_word, re.IGNORECASE):
-                        continue
+                    # prev_word = tweet[:tag_pos].split()[-1]
+                    # if re.search(neg_re, prev_word, re.IGNORECASE):
+                    #     continue
                         
                     cumulative[candidate]+= weight
                     
         ######################################################
         ## dispatch the tweets accordingly
         ## if 
-
+        print(cumulative)
         
         for candidate, count in cumulative.items():
             if count != 0:
@@ -220,7 +222,7 @@ if __name__ == '__main__':
         if args.emulate:
             from pymongo import MongoClient
             mongo = MongoClient()
-            mongo_col = mongo["egos"]["main"]
+            mongo_col = mongo["egos"]["main2"]
             for doc in mongo_col.find({}):
                 listener.on_data(doc)
                 time.sleep(0.2)
