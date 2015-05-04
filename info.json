@@ -16,7 +16,7 @@
             "#LibDemsTeam2015": 1
         },
         "min_inflation": 10,
-        "max_inflation": 2000,
+        "max_inflation": 20000,
         "retweet_adjustment": 1,
         "colour": { "r": 255, "g": 97, "b": 0 }
     },
@@ -40,7 +40,7 @@
             "#ChangeTheTune": 2
         },
         "min_inflation": 10,
-        "max_inflation": 2000,
+        "max_inflation": 20000,
         "colour": { "r": 25, "g": 173, "b": 71 }
     },
     "cameron":{
@@ -61,7 +61,7 @@
         "short_name":"cameron",
         "ip": "192.168.1.26",
         "min_inflation": 10,
-        "max_inflation": 2000,
+        "max_inflation": 20000,
         "colour": { "r": 40, "g": 40, "b": 130 }
     },
     "wood":{
@@ -80,7 +80,7 @@
             "#PlaidManifesto": 0
         },
         "min_inflation": 10,
-        "max_inflation": 2000,
+        "max_inflation": 20000,
         "colour": { "r": 12, "g": 61, "b": 8 }
     },
     "farage":{
@@ -101,7 +101,7 @@
             "#teamNigel": 2
         },
         "min_inflation": 10,
-        "max_inflation": 2000,
+        "max_inflation": 20000,
         "colour": { "r": 58, "g": 7, "b": 84 }
     },
     "miliband":{
@@ -121,7 +121,7 @@
             "#milifandom": 2
         },
         "min_inflation": 10,
-        "max_inflation": 2000,
+        "max_inflation": 20000,
         "colour": { "r": 207, "g": 17, "b": 52 }
     },
     "sturgeon":{
@@ -142,7 +142,7 @@
             "#VoteSNPGetSexy": 2
         },
         "min_inflation": 10,
-        "max_inflation": 2000,
+        "max_inflation": 20000,
         "colour": { "r": 240, "g": 240, "b": 0 }
     }
 }

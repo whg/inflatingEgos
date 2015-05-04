@@ -18,10 +18,11 @@ sys.path.append('..')
 from twitter_infos import infos
 import osc_helpers as oh
 
+logging.basicConfig(level=logging.DEBUG)
 
 balloon_queue = None
 
-us = False
+us = True
 class DummySerial():
     def close(self):
         pass
@@ -41,11 +42,11 @@ candidates = {
         'size': 0
     },
     'cameron': { 'number': 5, 'size': 0 },
-    'clegg': { 'number': 3, 'size': 0 },
-    'miliband': { 'number': 2, 'size': 0 },
+    'clegg': { 'number': 4, 'size': 0 },
+    'miliband': { 'number': 3, 'size': 0 },
     'wood': { 'number': 43, 'size': 0 },
-    'sturgeon': { 'number': 1, 'size': 0 },
-    'bennett': { 'number': 0, 'size': 0 },
+    'sturgeon': { 'number': 2, 'size': 0 },
+    'bennett': { 'number': 1, 'size': 0 },
 }
 
 statuses = defaultdict(bool)
@@ -104,26 +105,39 @@ def instruction(ud, candidate, time, osc_msg):
     process_instruction(BalloonInstruction(candidate, time, osc_msg))
 
 def balloon_size(ud, number, area, circleness):
-    logging.debug("got ballon data for %d" % (number))
     
+    global candidates
+
+    print(candidates)
+
+    c = None
     for candidate, value in candidates.items():
         if value['number'] == number:
             # if circleness > 0.8:
-            candidates['size'] = area
-            logging.debug("set size for %s to %f" % (candidate, area))
+            c = candidate
+            break
 
-            # stop a balloon staying on deflate for too long
-            if area < infos[candiate]['min_inflation']:
-                stop(number)
+    if c:
+        candidate = c
+        print(area)
+        print('before %s' % candidates[candidate]['size'])
+        candidates[candidate]['size'] = area
+        print('after %s' % candidates[candidate]['size'])
+
+        logging.debug("set size for %s (%d) to %f" % (candidate, number, area))
+            
+        # stop a balloon staying on deflate for too long
+        if area < infos[candidate]['min_inflation']:
+            stop(number)
                 
-            return
 
+    print(candidates)
 
 def start_connection():
 
     global se
     if us:
-        se = serial.Serial('/dev/tty.usbserial-A403999Z')
+        se = serial.Serial('/dev/ttyUSB0')
     else:
         se = DummySerial()
 
@@ -147,15 +161,19 @@ def process_instruction(bi):
 
     # print("JASDJFSKDJ SFJDFS SDFJ")
     
+    global candidates
     number = candidates[bi.candidate]['number']
     time = bi.amount
-
-    sleep(1)
-    print('ident = %s' % threading.current_thread().ident)
 
     oh.send_message_to_screen(bi.candidate, pickle.loads(bi.osc_msg))
     logging.info("process_instruction(): sent instruction to candidate")
 
+    return
+    
+    sleep(5)
+    print('ident = %s' % threading.current_thread().ident)
+
+    
     print('doing instruction')
     if time == 0:
         stop(number)
@@ -203,7 +221,19 @@ def start_balloon_thread():
 
     
 if __name__ == "__main__":
+
+    # start_connection()
+    # cand = candidates['clegg']
+    # while cand['size'] < 2000:
+    #     inflate(cand['number'], 10)
+    #     sleep(5)
+    #     print(cand['size'])
+
+    # exit()
+
     try:
+
+
 
         start_connection()
 
