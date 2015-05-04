@@ -18,7 +18,7 @@ from twitter_infos import infos, other_tags, swear_re, neg_re
 import osc_helpers as oh
 from comms import contact
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
 consumer_key="CQ8wPwKADz9FheAOui23uYUjW"
@@ -42,7 +42,8 @@ def do_affect(candidate, data, count):
     try:
         delta = (now - last_update[candidate]).seconds
     except KeyError:
-        delta = space +1
+        from random import randint
+        delta = space + randint(0, space)
         
     if delta > space:
         osc_msg = oh.action_update(data, count)

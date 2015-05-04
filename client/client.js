@@ -110,10 +110,10 @@ function favourites_and_retweets(arg) {
             setTimeout(function() {
                 console.log(t);
                 console.log("animating " );
-                $(t).animate({ "top": -2000 }, 4000, function() {
+                $(t).animate({ "top": -2000 }, 3000, function() {
                     $("#status").html("");
                     $("#main").toggle(true);
-                    $("#main").animate({ "opacity": 1 }, 1000, function() {
+                    $("#main").animate({ "opacity": 1 }, 500, function() {
                     });
                 }); 
             }, 2000);
