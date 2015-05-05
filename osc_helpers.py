@@ -110,3 +110,11 @@ def affect_candidate(candidate, osc_msg, amount):
 
 
     
+def adjust_balloons():
+    global balloon_osc
+    if not balloon_osc:
+        balloon_osc = UDPClient('0.0.0.0', 5005)
+    
+    msg = OscMessageBuilder("/adjust")
+    balloon_osc.send(msg.build())
+    logging.info("sent adjustment")

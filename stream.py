@@ -14,7 +14,7 @@ from collections import defaultdict
 from argparse import ArgumentParser
 import re
 
-from twitter_infos import infos, other_tags, swear_re, neg_re
+from twitter_infos import infos, other_tags, swear_re, neg_re, special_tags
 import osc_helpers as oh
 from comms import contact
 
@@ -98,7 +98,12 @@ class InflatedEgos(StreamListener):
                 raise e
 
 
-        
+        ######################################################
+        ## special tags
+
+        for candidate, tag in special_tags:
+            if tag in tweet:
+                do_affect(candidate, data, 5)
 
         ######################################################
         ## find the tags that mean something
@@ -216,7 +221,13 @@ if __name__ == '__main__':
     terms.extend(other_tags)
     logging.info(terms)
 
+    def adjust_thread():
+        while True:
+            oh.adjust_balloons()
+            time.sleep(30)
 
+    adjust_thread = threading.Thread(target=adjust_thread)
+    
 
     try:
         if args.emulate:
@@ -230,11 +241,13 @@ if __name__ == '__main__':
         else:
             if args.polling:
                 poll_thread = poll_candidates(10)
-        
+            
+            adjust_thread.start()
         # if args.balloon:
         #     contact_thread = contact.start_connection()
             # contact.start_balloon_thread()
-            stream.filter(track=terms, follow=follows)
+        
+        stream.filter(track=terms, follow=follows)
 
         
     except KeyboardInterrupt:

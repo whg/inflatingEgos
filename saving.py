@@ -36,14 +36,12 @@ def add_row_mongo(data):
     mongo_col.insert(data)
     logging.debug('inserted %s into mongo' % data['id'])
     
-def add_row(row, table='tweets4'):
+def add_row(conn, row, table='tweets4'):
     """Given the json from a tweet and candidate add to the SQLite db
     :params:
     :candidate: this is the string from the keys of the  terms.py dict
     :data: a tweet in JSON
     """
-    
-    global conn
     
     names = ','.join(row.keys())
     marks = ','.join(['?' for _ in row])
