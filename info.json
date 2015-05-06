@@ -6,7 +6,7 @@
         "osc_port":8002,
         "id_str":"15010349",
         "ws_port":9002,
-        "ip": "192.168.1.27",
+        "ip": "192.168.1.87",
         "tags": {
             "@Nick_Clegg": 0,
             "@LibDems": 0,
@@ -27,7 +27,7 @@
         "osc_port":8006,
         "id_str":"16596200",
         "ws_port":9006,
-        "ip": "192.168.1.28",
+        "ip": "192.168.1.87",
         "tags": {
             "@natalieben": 0,
             "@TheGreenParty": 0,
@@ -59,7 +59,7 @@
         "id_str":"103065157",
         "ws_port":9001,
         "short_name":"cameron",
-        "ip": "192.168.1.26",
+        "ip": "192.168.1.9",
         "min_inflation": 10,
         "max_inflation": 20000,
         "colour": { "r": 40, "g": 40, "b": 130 }
@@ -71,7 +71,7 @@
         "osc_port":8005,
         "id_str":"14450739",
         "ws_port":9005,
-        "ip": "192.168.1.28",
+        "ip": "192.168.1.87",
         "tags": {
             "@LeanneWood": 0,
             "@Plaid_Cymru": 0,
@@ -90,7 +90,7 @@
         "osc_port":8007,
         "id_str":"19017675",
         "ws_port":9007,
-        "ip": "192.168.1.26",
+        "ip": "192.168.1.203",
         "tags": {
             "@Nigel_Farage": 0,
             "@UKIP": 0,
@@ -111,7 +111,7 @@
         "osc_port":8003,
         "id_str":"61781260",
         "ws_port":9003,
-        "ip": "192.168.1.27",
+        "ip": "192.168.1.9",
         "tags": {
             "@Ed_Miliband": 0,
             "@UKLabour": 0,
@@ -131,7 +131,7 @@
         "osc_port":8004,
         "id_str":"160952087",
         "ws_port":9004,
-        "ip": "192.168.1.28",
+        "ip": "192.168.1.203",
         "tags": {
             "@NicolaSturgeon": 0,
             "@theSNP": 0,
