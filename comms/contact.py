@@ -25,6 +25,7 @@ import queue
 lock = threading.Lock()
 callback_queue = queue.Queue()
 
+adjust_multiplier = 2.1
 balloon_queue = None
 db_con = None
 
@@ -49,8 +50,8 @@ candidates = {
         'wanted': 0.14
     },
     'cameron': { 'number': 5, 'size': 0, 'wanted': 0.33 },
-    'clegg': { 'number': 4, 'size': 0, 'wanted': 0.08 },
-    'miliband': { 'number': 3, 'size': 0, 'wanted': 0.33 },
+    'clegg': { 'number': 4, 'size': 0, 'wanted': 0.08 * 1.5 },
+    'miliband': { 'number': 3, 'size': 0, 'wanted': 0.28 },
     'wood': { 'number': 43, 'size': 0, 'wanted': 0.0 },
     'sturgeon': { 'number': 2, 'size': 0, 'wanted': 0.06 },
     'bennett': { 'number': 1, 'size': 0, 'wanted': 0.06 },
@@ -207,7 +208,7 @@ def adjust_balloons(ud):
             continue
         number = v['number']
         time = 25
-        if size < 20000 * v['wanted']:
+        if size < (20000 * v['wanted']) * adjust_multiplier:
             logging.debug('inflating %d for %d' % (number, time))
             inflate(number, time)
             sleep(time * 0.1)

@@ -34,8 +34,8 @@ from scrape import poll_candidates
 
 last_update = {}
 
-def do_affect(candidate, data, count):
-    space = 15
+def do_affect(candidate, data, count, force=False):
+    space = 25
     
     now = datetime.now()
 
@@ -45,7 +45,7 @@ def do_affect(candidate, data, count):
         from random import randint
         delta = space +1
         
-    if delta > space:
+    if delta > space or force:
         logging.info('sending affect to %s' % candidate)
         osc_msg = oh.action_update(data, count)
         oh.affect_candidate(candidate, osc_msg, count)
@@ -103,7 +103,7 @@ class InflatedEgos(StreamListener):
 
         for candidate, tag in special_tags:
             if tag in tweet:
-                do_affect(candidate, data, 5)
+                do_affect(candidate, data, 5, force=True)
 
         ######################################################
         ## find the tags that mean something
@@ -156,17 +156,20 @@ class InflatedEgos(StreamListener):
                 # osc_msg = oh.action_update(data, count)
                 # oh.affect_candidate(candidate, osc_msg, count)
             else:
-                handle_re = [k for k in infos[candidate]['tags'].keys() if '@' in k]
+                pass
+
+            handle_re = [k for k in infos[candidate]['tags'].keys() if '@' in k]
                 # only do for handles
-                if re.search('|'.join(handle_re), tweet, re.IGNORECASE):
-                    # let's have a swear word
-                    if re.search(swear_re, tweet, re.IGNORECASE):
-                        count = -5
-                        do_affect(candidate, data, count)
-                        # osc_msg = oh.action_update(data, count)
-                        # oh.affect_candidate(candidate, osc_msg, count)
-                        print("BIG SWEAR WORD!!!!!!!!!!!!!")
-                        logging.info(tweet)
+            if re.search('|'.join(handle_re), tweet, re.IGNORECASE):
+                # let's have a swear word
+                print('in handle')
+                if re.search(swear_re, tweet, re.IGNORECASE):
+                    count = -5
+                    do_affect(candidate, data, count)
+                    # osc_msg = oh.action_update(data, count)
+                    # oh.affect_candidate(candidate, osc_msg, count)
+                    print("BIG SWEAR WORD!!!!!!!!!!!!!")
+                    logging.info(tweet)
 
         
         return True
@@ -224,7 +227,7 @@ if __name__ == '__main__':
     def adjust_thread():
         while True:
             oh.adjust_balloons()
-            time.sleep(30)
+            time.sleep(19)
 
     adjust_thread = threading.Thread(target=adjust_thread)
     

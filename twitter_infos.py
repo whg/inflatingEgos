@@ -27,7 +27,7 @@ for cand, tag in special_tags:
 def filename2words_re(filename):
     with open(os.path.join(os.path.dirname(__file__), filename)) as f:
         swear_lines = f.readlines()
-        swear_words = [' ' + line.strip() + ' ' for line in swear_lines]
+        swear_words = ['\s' + line.strip() + '[\s.,]' for line in swear_lines]
     return '|'.join(swear_words)
         
 
