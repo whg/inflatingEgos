@@ -13,6 +13,7 @@ from itertools import chain
 from collections import defaultdict
 from argparse import ArgumentParser
 import re
+import sys
 
 from twitter_infos import infos, other_tags, swear_re, neg_re, special_tags
 import osc_helpers as oh
@@ -230,7 +231,7 @@ if __name__ == '__main__':
             time.sleep(19)
 
     adjust_thread = threading.Thread(target=adjust_thread)
-    
+    adjust_thread.daemon = True
 
     try:
         if args.emulate:
@@ -255,6 +256,7 @@ if __name__ == '__main__':
         
     except KeyboardInterrupt:
         print('closed connection')
+        sys.exit(0)
     finally:
         # conn.close()
         # if contact_thread:
@@ -264,3 +266,5 @@ if __name__ == '__main__':
         #     poll_thread.join()
 
         pass
+
+    sys.exit(1)
